@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
     res.send('¡Hola desde Express con TypeScript en Qoddi!');
 });
 
