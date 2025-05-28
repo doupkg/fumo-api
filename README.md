@@ -1,2 +1,1 @@
-by leoua
-# This is a mirror from [git@codeberg.org:dou/fumo-api](https://codeberg.org/dou/fumo-api)
+by leoua @leoxyzua, thats why its branch is `main` and not `master`
