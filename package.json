@@ -4,7 +4,8 @@
     "description": "",
     "scripts": {
         "start": "bun src/index.ts",
-        "dev": "bun --hot src/index.ts"
+        "dev": "bun --hot src/index.ts",
+        "upload": "bun src/bot/uploadCommands.ts"
     },
     "main": "dist/index.js",
     "dependencies": {

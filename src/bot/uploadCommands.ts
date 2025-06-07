@@ -1,0 +1,27 @@
+import 'dotenv/config';
+import { ApplicationCommandType, Routes } from 'discord-api-types/v10';
+
+const { DISCORD_CLIENT_ID, DISCORD_CLIENT_TOKEN, DISCORD_GUILD_ID } = process.env;
+
+if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_TOKEN || !DISCORD_GUILD_ID) {
+    throw new Error('Missing environment variables');
+}
+
+const apiUrl =
+    'https://discord.com/api/v10' +
+    Routes.applicationGuildCommands(DISCORD_CLIENT_ID, DISCORD_GUILD_ID);
+
+fetch(apiUrl, {
+    headers: {
+        Authorization: `Bot ${DISCORD_CLIENT_TOKEN}`,
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify([
+        {
+            name: 'ping',
+            description: 'testtestesttesttesttest',
+            type: ApplicationCommandType.ChatInput,
+        },
+    ]),
+    method: 'PUT',
+}).then(async (res) => console.log(await res.json()));
