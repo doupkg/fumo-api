@@ -6,7 +6,6 @@ import interactionsRouter from './bot';
 const port = process.env.PORT || 3000;
 
 express()
-    .use(express.json())
     .use('/', apiRouter)
     .use('/interactions', interactionsRouter)
     .listen(port, () => {
