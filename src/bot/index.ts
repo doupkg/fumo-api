@@ -10,7 +10,7 @@ import { verifyKeyMiddleware } from 'discord-interactions';
 const { DISCORD_PUBLIC_KEY } = process.env;
 
 if (!DISCORD_PUBLIC_KEY) {
-    throw new Error('Missing environment variables');
+    throw new Error('DISCORD_PUBLIC_KEY environment variable is missing');
 }
 
 const interactionsRouter = Router();

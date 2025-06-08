@@ -4,7 +4,9 @@ import { ApplicationCommandType, Routes } from 'discord-api-types/v10';
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_TOKEN, DISCORD_GUILD_ID } = process.env;
 
 if (!DISCORD_CLIENT_ID || !DISCORD_CLIENT_TOKEN || !DISCORD_GUILD_ID) {
-    throw new Error('Missing environment variables');
+    throw new Error(
+        'DISCORD_CLIENT_ID, DISCORD_CLIENT_TOKEN, and DISCORD_GUILD_ID environment variables are missing',
+    );
 }
 
 const apiUrl =
