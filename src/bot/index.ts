@@ -3,7 +3,6 @@ import {
   type APIInteractionResponse,
   InteractionType,
   InteractionResponseType,
-  APIMessageComponentInteraction,
   MessageFlags,
 } from 'discord-api-types/v10'
 import { type Request, type Response, Router } from 'express'
@@ -48,17 +47,7 @@ interactionsRouter.post(
         break
 
       case InteractionType.MessageComponent:
-        const { data: { custom_id }, member } = interaction
-
-        let { author_id } = decodeBuffer(custom_id) as { author_id: string }
-
-        if (author_id !== member!.user.id) return res.send({
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            content: "sybau",
-            flags: MessageFlags.Ephemeral
-          }
-        })
+        const { data: { custom_id } } = interaction
 
         return res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
