@@ -6,9 +6,8 @@ import {
 } from 'discord-api-types/v10';
 import { Request, Response, Router } from 'express';
 import { verifyKeyMiddleware } from 'discord-interactions';
-import { pingCommand, uploadCommand } from './commands';
+import commands from './commands';
 
-const commands = [pingCommand, uploadCommand];
 const { DISCORD_PUBLIC_KEY } = process.env;
 
 if (!DISCORD_PUBLIC_KEY) {

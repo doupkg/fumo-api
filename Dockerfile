@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN bun install
+RUN bun install --filter '!mongodb-memory-server'
 
 CMD ["bun", "start"]
