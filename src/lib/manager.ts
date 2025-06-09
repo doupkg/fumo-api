@@ -1,61 +1,95 @@
 import { Collection, Db, Filter, ObjectId } from 'mongodb';
 import NodeCache from 'node-cache';
-import connectDatabase from './database';
+import DatabaseConnection from './database';
 import fumos from '../data/fumos.json';
 import sift from 'sift';
 
 const filetypes = ['gif', 'png', 'jpg', 'webp'];
 
-type InsertionData = {
+export type InsertionData = {
     url: string;
+    title: string;
     filetype: 'gif' | 'png' | 'jpg' | 'webp';
     fumos: string[];
 };
 
-type Document = InsertionData & {
+export type Document = InsertionData & {
     _id: ObjectId;
 };
 
-export default class DataManager {
-    private db: Collection<InsertionData>;
+export class DataManager {
+    private static _instance: DataManager | null = null;
+    private db: Collection<Document> | null = null;
     private cache: NodeCache;
-    private cacheKeyPrefix: string;
+    private cacheKeyPrefix: string = '';
 
-    constructor(_db: Db, collection: string) {
-        this.db = _db.collection(collection);
+    private constructor() {
         this.cache = new NodeCache({ stdTTL: 60 * 60 * 24 });
-        this.cacheKeyPrefix = `${collection}:document:`;
+    }
+
+    static get instance(): DataManager {
+        if (!DataManager._instance) {
+            DataManager._instance = new DataManager();
+        }
+        return DataManager._instance;
+    }
+
+    private checkInitialized() {
+        if (!this.db) throw new Error('Database not initialized');
     }
 
     private makePrefix(id: ObjectId | string) {
         return `${this.cacheKeyPrefix}${id.toString()}`;
     }
 
-    static async init(uri: string, db: string, collection: string) {
-        const database = await connectDatabase(uri, db);
-        const manager = new DataManager(database, collection);
-        const data = await manager.getAll();
+    validateFiletype(filetype: string) {
+        return filetypes.includes(filetype);
+    }
 
+    validateFumos(names: string[]) {
+        return names.every((name) => fumos.some((fumo) => fumo.value === name));
+    }
+
+    async init(uri: string, db: string, collection: string): Promise<void> {
+        if (this.db) {
+            console.log('Database already initialized');
+            return;
+        }
+
+        const database = DatabaseConnection.instance.connect(uri, db);
+        this.db = database.collection(collection);
+        this.cacheKeyPrefix = `${collection}:document:`;
+
+        const data = await this.getAll();
         console.log(
             `Database initialized for collection ${collection} with ${data.length} documents`,
         );
-        return manager;
     }
 
-    async create(data: InsertionData): Promise<Document> {
-        if (!data.url || !filetypes.includes(data.filetype) || !Array.isArray(data.fumos)) {
+    async upload(data: InsertionData): Promise<Document> {
+        this.checkInitialized();
+
+        if (
+            !data.url ||
+            !data.title ||
+            !this.validateFiletype(data.filetype) ||
+            !this.validateFumos(data.fumos)
+        ) {
             throw new Error('Invalid parameters');
         }
 
         const existing = await this.find({ url: data.url });
         if (existing.length > 0) {
-            throw new Error(`Document already exists`);
+            throw new Error(`File already exists`, { cause: existing[0] });
         }
 
-        const result = await this.db.insertOne(data);
+        const result = await this.db!.insertOne({
+            ...data,
+            _id: new ObjectId(),
+        });
 
         if (!result.acknowledged) {
-            throw new Error('Error al insertar el documento en la base de datos');
+            throw new Error('Database error');
         }
 
         const insertedDocument: Document = {
@@ -69,12 +103,14 @@ export default class DataManager {
     }
 
     async find(query: Filter<Document>): Promise<Document[]> {
+        this.checkInitialized();
+
         const cachedItems = this.searchCache(query);
         if (cachedItems.length > 0) {
             return cachedItems;
         }
 
-        const data = await this.db.find(query).toArray();
+        const data = await this.db!.find(query).toArray();
         for (const item of data) {
             this.cache.set(this.makePrefix(item._id), item);
         }
@@ -85,8 +121,7 @@ export default class DataManager {
         const allCacheKeys = this.cache.keys();
         const documents: Document[] = [];
 
-        const siftQuery = this.prepareSiftQuery(query);
-        const test = sift(siftQuery);
+        const test = sift(this.prepareQueryForCache(query));
 
         for (const key of allCacheKeys) {
             const doc = this.cache.get<Document>(key);
@@ -98,20 +133,13 @@ export default class DataManager {
         return documents;
     }
 
-    private prepareSiftQuery(query: Filter<Document>) {
+    private prepareQueryForCache(query: Filter<Document>) {
         const prepared = { ...query } as any;
 
         if ('_id' in prepared) {
             const idQuery = prepared._id;
             if (idQuery instanceof ObjectId) {
                 prepared._id = idQuery.toString();
-            } else if (typeof idQuery === 'object' && idQuery !== null) {
-                if ('$eq' in idQuery) {
-                    idQuery.$eq = (idQuery.$eq as ObjectId).toString();
-                }
-                if ('$in' in idQuery) {
-                    idQuery.$in = (idQuery.$in as ObjectId[]).map((id) => id.toString());
-                }
             }
         }
 
@@ -119,6 +147,7 @@ export default class DataManager {
     }
 
     async getById(id: string): Promise<Document | null> {
+        this.checkInitialized();
         if (!ObjectId.isValid(id)) return null;
 
         const cacheKey = this.makePrefix(id);
@@ -127,7 +156,7 @@ export default class DataManager {
             return cachedData;
         }
 
-        const data = await this.db.findOne({ _id: new ObjectId(id) });
+        const data = await this.db!.findOne({ _id: new ObjectId(id) });
         if (!data) return null;
 
         this.cache.set(cacheKey, data);
@@ -135,6 +164,8 @@ export default class DataManager {
     }
 
     async getAll(): Promise<Document[]> {
+        this.checkInitialized();
+
         const cacheKeys = this.cache.keys().filter((key) => key.startsWith(this.cacheKeyPrefix));
         if (cacheKeys) {
             const cacheData = cacheKeys
@@ -143,7 +174,7 @@ export default class DataManager {
             return cacheData;
         }
 
-        const data = await this.db.find().toArray();
+        const data = await this.db!.find().toArray();
         if (data.length === 0) {
             console.log('Collection is empty');
             return [];
@@ -155,5 +186,10 @@ export default class DataManager {
 
         console.log(`${data.length} documents cached`);
         return data;
+    }
+
+    close() {
+        this.cache.flushAll();
+        DatabaseConnection.instance.disconnect();
     }
 }
