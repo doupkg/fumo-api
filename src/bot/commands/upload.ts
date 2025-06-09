@@ -4,30 +4,15 @@ import {
   type APIChatInputApplicationCommandGuildInteraction,
   type APIInteractionResponseCallbackData,
   type APISelectMenuOption,
-  type APIActionRowComponent,
   ComponentType,
-  type APISelectMenuComponent,
-  MessageFlags,
 } from 'discord-api-types/v10'
 import Fumos from '../../data/fumos.json'
+import { encodeBuffer } from '@/lib'
 
 const selectOptions: APISelectMenuOption[] = Fumos.map((fumo) => ({
   label: fumo.name,
   value: fumo.value,
 }))
-
-const components: APIActionRowComponent<APISelectMenuComponent>[] = [
-  {
-    type: ComponentType.ActionRow,
-    components: [
-      {
-        type: ComponentType.StringSelect,
-        custom_id: 'fumo_select',
-        options: selectOptions,
-      },
-    ],
-  },
-]
 
 export const uploadCommand = {
   name: 'upload',
@@ -48,11 +33,20 @@ export const uploadCommand = {
     },
   ],
   async execute(
-    _interaction: APIChatInputApplicationCommandGuildInteraction,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
   ): Promise<APIInteractionResponseCallbackData> {
     return {
       embeds: [{ description: 'StringSelect' }],
-      components,
+      components: [{
+        type: ComponentType.ActionRow,
+        components: [
+          {
+            type: ComponentType.StringSelect,
+            custom_id: encodeBuffer({ prev_data: interaction.data, author_id: interaction.member.user.id }),
+            options: selectOptions,
+          },
+        ],
+      },],
     }
   },
 }

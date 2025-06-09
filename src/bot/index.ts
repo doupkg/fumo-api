@@ -4,6 +4,7 @@ import {
   InteractionType,
   InteractionResponseType,
   MessageFlags,
+  APIChatInputApplicationCommandInteraction,
 } from 'discord-api-types/v10'
 import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
@@ -39,10 +40,10 @@ interactionsRouter.post(
 
       case InteractionType.ApplicationCommand:
         const command = commandCollection.get(interaction.data.name)
-        const data = await command?.execute(interaction)
+        const cmd_data = await command?.execute(interaction)
         res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
-          data,
+          data: cmd_data,
         })
         break
 
@@ -51,10 +52,12 @@ interactionsRouter.post(
           data: { custom_id },
         } = interaction
 
+        const { prev_data, author_id } = decodeBuffer(custom_id) as { prev_data: APIChatInputApplicationCommandInteraction, author_id: string }
+
         return res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
           data: {
-            content: `You have interacted with ${custom_id}`,
+            content: `The original command was executed by ${author_id}, you have interacted with ${prev_data.data.options}`,
             flags: MessageFlags.Ephemeral,
           },
         })
