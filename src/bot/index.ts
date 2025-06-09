@@ -6,19 +6,23 @@ import {
 } from 'discord-api-types/v10';
 import { Request, Response, Router } from 'express';
 import { verifyKeyMiddleware } from 'discord-interactions';
+import { pingCommand, uploadCommand } from './commands';
 
+const commands = [pingCommand, uploadCommand];
 const { DISCORD_PUBLIC_KEY } = process.env;
 
 if (!DISCORD_PUBLIC_KEY) {
     throw new Error('DISCORD_PUBLIC_KEY environment variable is missing');
 }
 
+const commandCollection = new Map<string, any>(commands.map((command) => [command.name, command]));
+
 const interactionsRouter = Router();
 
 interactionsRouter.post(
     '/',
     verifyKeyMiddleware(DISCORD_PUBLIC_KEY),
-    (req: Request<never, APIInteractionResponse, APIInteraction>, res: Response) => {
+    async (req: Request<never, APIInteractionResponse, APIInteraction>, res: Response) => {
         const interaction = req.body;
 
         switch (interaction.type) {
@@ -28,12 +32,11 @@ interactionsRouter.post(
                 break;
 
             case InteractionType.ApplicationCommand:
-                console.log('Application command received');
+                const command = commandCollection.get(interaction.data.name);
+                const data = await command?.execute(interaction);
                 res.send({
                     type: InteractionResponseType.ChannelMessageWithSource,
-                    data: {
-                        content: 'pong',
-                    },
+                    data,
                 });
                 break;
         }

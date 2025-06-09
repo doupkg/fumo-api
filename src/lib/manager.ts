@@ -19,7 +19,7 @@ export type Document = InsertionData & {
 
 export class DataManager {
     private static _instance: DataManager | null = null;
-    private db: Collection<Document> | null = null;
+    db: Collection<Document> | null = null;
     private cache: NodeCache;
     private cacheKeyPrefix: string = '';
 
