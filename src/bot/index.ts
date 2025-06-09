@@ -41,6 +41,7 @@ interactionsRouter.post(
       case InteractionType.ApplicationCommand:
         const command = commandCollection.get(interaction.data.name)
         const cmd_data = await command?.execute(interaction)
+        console.log(cmd_data)
         res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
           data: cmd_data,
@@ -52,7 +53,10 @@ interactionsRouter.post(
           data: { custom_id },
         } = interaction
 
-        const { prev_data, author_id } = decodeBuffer(custom_id) as { prev_data: APIChatInputApplicationCommandInteraction, author_id: string }
+        const { prev_data, author_id } = decodeBuffer(custom_id) as {
+          prev_data: APIChatInputApplicationCommandInteraction
+          author_id: string
+        }
 
         return res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
