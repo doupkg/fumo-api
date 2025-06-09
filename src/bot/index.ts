@@ -41,7 +41,7 @@ interactionsRouter.post(
       case InteractionType.ApplicationCommand:
         const command = commandCollection.get(interaction.data.name)
         const cmd_data = await command?.execute(interaction)
-        console.log(cmd_data)
+        console.dir(cmd_data, { depth: null })
         res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
           data: cmd_data,

@@ -37,16 +37,21 @@ export const uploadCommand = {
   ): Promise<APIInteractionResponseCallbackData> {
     return {
       embeds: [{ description: 'StringSelect' }],
-      components: [{
-        type: ComponentType.ActionRow,
-        components: [
-          {
-            type: ComponentType.StringSelect,
-            custom_id: encodeBuffer({ prev_data: interaction, author_id: interaction.member.user.id }),
-            options: selectOptions,
-          },
-        ],
-      },],
+      components: [
+        {
+          type: ComponentType.ActionRow,
+          components: [
+            {
+              type: ComponentType.StringSelect,
+              custom_id: encodeBuffer({
+                prev_data: interaction,
+                author_id: interaction.member.user.id,
+              }),
+              options: selectOptions,
+            },
+          ],
+        },
+      ],
     }
   },
 }
