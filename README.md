@@ -1,6 +1,8 @@
 by leoua @leoxyzua, thats why its branch is `main` and not `master` - hyduez @hyduez
 sybau - leoua @leoxyzua
 
+Original idea: https://github.com/nosesisaid/fumo-api
+
 > [!IMPORTANT]
 > This API is WIP (Work In Progress), it will be refactor to ElysiaJS to use OpenAPI standard and generate an autonomous documentation
 
