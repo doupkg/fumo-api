@@ -54,15 +54,15 @@ interactionsRouter.post(
             data: { custom_id },
           } = interaction
 
-          const { prev_data, author_id } = decodeBuffer(custom_id) as {
-            prev_data: APIChatInputApplicationCommandInteraction
+          const { options, author_id } = decodeBuffer(custom_id) as {
+            options: { name: string, type: string }[]
             author_id: string
           }
 
           return res.send({
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
-              content: `The original command was executed by ${author_id}, you have interacted with ${prev_data.data.options}`,
+              content: `The original command was executed by ${author_id}, you have interacted with ${options[0].name ?? 'Fallo en la matrix'}`,
               flags: MessageFlags.Ephemeral,
             },
           })

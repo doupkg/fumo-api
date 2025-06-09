@@ -44,7 +44,7 @@ export const uploadCommand = {
             {
               type: ComponentType.StringSelect,
               custom_id: encodeBuffer({
-                prev_data: interaction,
+                options: interaction.data.options,
                 author_id: interaction.member.user.id,
               }),
               options: selectOptions,
