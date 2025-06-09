@@ -33,7 +33,9 @@ export const uploadCommand = {
     },
   ],
   async execute(
-    interaction: APIChatInputApplicationCommandGuildInteraction,
+    interaction: APIChatInputApplicationCommandGuildInteraction & {
+      data: { options: { value: string }[] }
+    },
   ): Promise<APIInteractionResponseCallbackData> {
     return {
       embeds: [{ description: 'StringSelect' }],
@@ -44,7 +46,7 @@ export const uploadCommand = {
             {
               type: ComponentType.StringSelect,
               custom_id: encodeBuffer({
-                options: interaction.data.options,
+                options: { title: interaction.data.options[0].value },
                 author_id: interaction.member.user.id,
               }),
               options: selectOptions,

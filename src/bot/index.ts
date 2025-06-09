@@ -55,14 +55,14 @@ interactionsRouter.post(
           } = interaction
 
           const { options, author_id } = decodeBuffer(custom_id) as {
-            options: { name: string, type: string }[]
+            options: { title: string }
             author_id: string
           }
 
           return res.send({
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
-              content: `The original command was executed by ${author_id}, you have interacted with ${options[0].name ?? 'Fallo en la matrix'}`,
+              content: `The original command was executed by ${author_id}, you have interacted with ${options.title ?? 'Fallo en la matrix'}`,
               flags: MessageFlags.Ephemeral,
             },
           })
