@@ -1,4 +1,4 @@
-import { Collection, Filter, Condition, ObjectId } from 'mongodb'
+import { type Collection, type Filter, type Condition, ObjectId } from 'mongodb'
 import NodeCache from 'node-cache'
 import DatabaseConnection from './database'
 import fumos from '../data/fumos.json'

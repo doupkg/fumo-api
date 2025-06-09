@@ -1,7 +1,7 @@
 import {
   ApplicationCommandType,
-  APIChatInputApplicationCommandGuildInteraction,
-  APIInteractionResponseCallbackData,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIInteractionResponseCallbackData,
 } from 'discord-api-types/v10'
 
 import { DataManager } from '../../lib/manager'

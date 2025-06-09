@@ -1,5 +1,5 @@
-import { Request, Response, Router } from 'express'
-import { DataManager, Document } from '../lib/'
+import { type Request, type Response, Router } from 'express'
+import { DataManager, type Document } from '../lib/'
 import Fumos from '../data/fumos.json'
 
 type Query = Record<string, any>

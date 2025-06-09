@@ -1,12 +1,12 @@
 import {
-  APIInteraction,
-  APIInteractionResponse,
+  type APIInteraction,
+  type APIInteractionResponse,
   InteractionType,
   InteractionResponseType,
 } from 'discord-api-types/v10'
-import { Request, Response, Router } from 'express'
+import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
-import commands from './commands'
+import Commands from './commands'
 
 const { DISCORD_PUBLIC_KEY } = process.env
 
@@ -14,7 +14,7 @@ if (!DISCORD_PUBLIC_KEY) {
   throw new Error('DISCORD_PUBLIC_KEY environment variable is missing')
 }
 
-const commandCollection = new Map<string, any>(commands.map((command) => [command.name, command]))
+const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
 
 const interactionsRouter = Router()
 

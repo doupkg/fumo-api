@@ -1,11 +1,11 @@
-import { Db, MongoClient } from 'mongodb'
+import { type Db, MongoClient } from 'mongodb'
 
 export default class DatabaseConnection {
   private static _instance: DatabaseConnection
   private client: MongoClient | null = null
   private db: Db | null = null
 
-  private constructor() {}
+  private constructor() { }
 
   static get instance(): DatabaseConnection {
     if (!DatabaseConnection._instance) {

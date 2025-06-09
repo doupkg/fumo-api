@@ -1,12 +1,12 @@
 import {
   ApplicationCommandType,
   ApplicationCommandOptionType,
-  APIChatInputApplicationCommandGuildInteraction,
-  APIInteractionResponseCallbackData,
-  APISelectMenuOption,
-  APIActionRowComponent,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIInteractionResponseCallbackData,
+  type APISelectMenuOption,
+  type APIActionRowComponent,
   ComponentType,
-  APISelectMenuComponent,
+  type APISelectMenuComponent,
 } from 'discord-api-types/v10'
 import Fumos from '../../data/fumos.json'
 
@@ -50,7 +50,7 @@ export const uploadCommand = {
     _interaction: APIChatInputApplicationCommandGuildInteraction,
   ): Promise<APIInteractionResponseCallbackData> {
     return {
-      content: 'pong',
+      content: 'pong v1',
       components,
     }
   },
