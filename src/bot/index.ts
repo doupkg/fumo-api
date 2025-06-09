@@ -48,29 +48,26 @@ interactionsRouter.post(
         break
 
       case InteractionType.MessageComponent:
-        ((req: Request<never, never, APIMessageComponentInteraction>, res) => {
-          const { data: { custom_id }, member } = req.body
+        const { data: { custom_id }, member } = interaction
 
-          let { author_id } = decodeBuffer(custom_id) as { author_id: string }
+        let { author_id } = decodeBuffer(custom_id) as { author_id: string }
 
-          if (author_id != member!.user.id) return res.json({
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: {
-              content: "sybau",
-              flags: MessageFlags.Ephemeral
-            }
-          })
+        if (author_id !== member!.user.id) return res.send({
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: "sybau",
+            flags: MessageFlags.Ephemeral
+          }
+        })
 
-          res.json({
-            type: InteractionResponseType.UpdateMessage,
-            data: {
-              content: `You have interacted with ${custom_id}`,
-              flags: MessageFlags.Ephemeral
-            }
-          })
+        return res.send({
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            content: `You have interacted with ${custom_id}`,
+            flags: MessageFlags.Ephemeral
+          }
+        })
 
-        })(req as Request<never, never, APIMessageComponentInteraction>, res)
-        break
     }
   },
 )
