@@ -3,6 +3,8 @@ import {
   type APIInteractionResponse,
   InteractionType,
   InteractionResponseType,
+  APIMessageComponentInteraction,
+  MessageFlags,
 } from 'discord-api-types/v10'
 import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
@@ -15,6 +17,12 @@ if (!DISCORD_PUBLIC_KEY) {
 }
 
 const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
+
+function decodeBuffer(encoded: string) {
+  const buffer = Buffer.from(encoded, 'base64').toString('ascii')
+
+  return JSON.parse(buffer)
+}
 
 const interactionsRouter = Router()
 
@@ -38,6 +46,29 @@ interactionsRouter.post(
           data,
         })
         break
+
+      case InteractionType.MessageComponent:
+        ((req: Request<never, never, APIMessageComponentInteraction>, res) => {
+          const { data: { custom_id }, member } = req.body
+
+          let { author_id } = decodeBuffer(custom_id) as { author_id: string }
+
+          if (author_id != member!.user.id) return res.json({
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: "sybau",
+              flags: MessageFlags.Ephemeral
+            }
+          })
+
+          return res.json({
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `You have interacted with ${custom_id}`
+            }
+          })
+
+        })(req as Request<never, never, APIMessageComponentInteraction>, res)
     }
   },
 )

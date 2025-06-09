@@ -47,10 +47,10 @@ export const uploadCommand = {
     },
   ],
   async execute(
-    interaction: APIChatInputApplicationCommandGuildInteraction,
+    _interaction: APIChatInputApplicationCommandGuildInteraction,
   ): Promise<APIInteractionResponseCallbackData> {
     return {
-      content: `${interaction.data.options}`,
+      embeds: [{ description: 'StringSelect' }],
       components,
     }
   },
