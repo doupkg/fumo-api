@@ -5,7 +5,7 @@ import interactionsRouter from './bot'
 import { DataManager } from './lib'
 
 const port = process.env.PORT || 3000
-const development = process.env.DEVELOPMENT || false
+const development = process.env.DEVELOPMENT || true
 
 if (!process.env.MONGO_URI) {
   throw new Error('Missing environment variable MONGODB_URI')
