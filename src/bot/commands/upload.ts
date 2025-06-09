@@ -35,7 +35,7 @@ export const uploadCommand = {
   options: [
     {
       name: 'url',
-      description: 'The URL of the image, it has to end with a valid extension!',
+      description: 'The URL of the image, it must to end with a valid extension!',
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -47,10 +47,10 @@ export const uploadCommand = {
     },
   ],
   async execute(
-    _interaction: APIChatInputApplicationCommandGuildInteraction,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
   ): Promise<APIInteractionResponseCallbackData> {
     return {
-      content: 'pong v1',
+      content: `${interaction.data.options}`,
       components,
     }
   },
