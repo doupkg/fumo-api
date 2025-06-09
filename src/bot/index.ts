@@ -32,39 +32,47 @@ interactionsRouter.post(
   async (req: Request<never, APIInteractionResponse, APIInteraction>, res: Response) => {
     const interaction = req.body
 
-    switch (interaction.type) {
-      case InteractionType.Ping:
-        console.log('Ping received')
-        res.send({ type: InteractionResponseType.Pong })
-        break
+    try {
+      switch (interaction.type) {
+        case InteractionType.Ping:
+          console.log('Ping received')
+          res.send({ type: InteractionResponseType.Pong })
+          break
 
-      case InteractionType.ApplicationCommand:
-        const command = commandCollection.get(interaction.data.name)
-        const cmd_data = await command?.execute(interaction)
-        console.dir(cmd_data, { depth: null })
-        res.send({
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: cmd_data,
-        })
-        break
+        case InteractionType.ApplicationCommand:
+          const command = commandCollection.get(interaction.data.name)
+          const cmd_data = await command?.execute(interaction)
+          console.dir(cmd_data, { depth: null })
+          res.send({
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: cmd_data,
+          })
+          break
 
-      case InteractionType.MessageComponent:
-        const {
-          data: { custom_id },
-        } = interaction
+        case InteractionType.MessageComponent:
+          const {
+            data: { custom_id },
+          } = interaction
 
-        const { prev_data, author_id } = decodeBuffer(custom_id) as {
-          prev_data: APIChatInputApplicationCommandInteraction
-          author_id: string
-        }
+          const { prev_data, author_id } = decodeBuffer(custom_id) as {
+            prev_data: APIChatInputApplicationCommandInteraction
+            author_id: string
+          }
 
-        return res.send({
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            content: `The original command was executed by ${author_id}, you have interacted with ${prev_data.data.options}`,
-            flags: MessageFlags.Ephemeral,
-          },
-        })
+          return res.send({
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: {
+              content: `The original command was executed by ${author_id}, you have interacted with ${prev_data.data.options}`,
+              flags: MessageFlags.Ephemeral,
+            },
+          })
+      }
+    } catch (error) {
+      console.error(error)
+      res.send({
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data: { content: 'An error occurred', flags: MessageFlags.Ephemeral },
+      })
     }
   },
 )
