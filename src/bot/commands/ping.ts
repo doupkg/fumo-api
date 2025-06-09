@@ -2,9 +2,9 @@ import {
   ApplicationCommandType,
   APIChatInputApplicationCommandGuildInteraction,
   APIInteractionResponseCallbackData,
-} from 'discord-api-types/v10';
+} from 'discord-api-types/v10'
 
-import { DataManager } from '../../lib/manager';
+import { DataManager } from '../../lib/manager'
 
 export const pingCommand = {
   name: 'ping',
@@ -13,9 +13,9 @@ export const pingCommand = {
   async execute(
     _interaction: APIChatInputApplicationCommandGuildInteraction,
   ): Promise<APIInteractionResponseCallbackData> {
-    const start = Date.now();
-    const count = await DataManager.instance.db?.countDocuments();
-    const end = Date.now();
-    return { content: `Counted ${count} documents in ${end - start}ms` };
+    const start = Date.now()
+    const count = await DataManager.instance.db?.countDocuments()
+    const end = Date.now()
+    return { content: `Counted ${count} documents in ${end - start}ms` }
   },
-};
+}

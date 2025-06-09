@@ -1,4 +1,4 @@
-import { pingCommand } from './ping';
-import { uploadCommand } from './upload';
+import { pingCommand } from './ping'
+import { uploadCommand } from './upload'
 
-export default [pingCommand, uploadCommand];
+export default [pingCommand, uploadCommand]

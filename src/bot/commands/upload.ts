@@ -7,13 +7,13 @@ import {
   APIActionRowComponent,
   ComponentType,
   APISelectMenuComponent,
-} from 'discord-api-types/v10';
-import fumos from '../../data/fumos.json';
+} from 'discord-api-types/v10'
+import fumos from '../../data/fumos.json'
 
 const selectOptions: APISelectMenuOption[] = fumos.map((fumo) => ({
   label: fumo.name,
   value: fumo.value,
-}));
+}))
 
 const components: APIActionRowComponent<APISelectMenuComponent>[] = [
   {
@@ -26,7 +26,7 @@ const components: APIActionRowComponent<APISelectMenuComponent>[] = [
       },
     ],
   },
-];
+]
 
 export const uploadCommand = {
   name: 'upload',
@@ -52,6 +52,6 @@ export const uploadCommand = {
     return {
       content: 'pong',
       components,
-    };
+    }
   },
-};
+}
