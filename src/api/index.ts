@@ -8,7 +8,7 @@ const apiRouter = Router()
 const unixtime = new Date()
 
 apiRouter.get('/', (_req: Request, res: Response) => {
-  res.send(`codeberg is ahh, last deploy: ${unixtime.toISOString()}`)
+  res.send(`codeberg is ahh, last deploy: ${unixtime.toUTCString()}`)
 })
 
 apiRouter.get('/fumos', async (req: Request, res: Response) => {

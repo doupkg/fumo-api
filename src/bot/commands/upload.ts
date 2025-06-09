@@ -7,6 +7,7 @@ import {
   type APIActionRowComponent,
   ComponentType,
   type APISelectMenuComponent,
+  MessageFlags,
 } from 'discord-api-types/v10'
 import Fumos from '../../data/fumos.json'
 
@@ -51,6 +52,7 @@ export const uploadCommand = {
   ): Promise<APIInteractionResponseCallbackData> {
     return {
       embeds: [{ description: 'StringSelect' }],
+      flags: MessageFlags.IsComponentsV2,
       components,
     }
   },
