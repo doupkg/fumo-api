@@ -61,8 +61,8 @@ interactionsRouter.post(
             }
           })
 
-          res.send({
-            type: InteractionResponseType.ChannelMessageWithSource,
+          res.json({
+            type: InteractionResponseType.UpdateMessage,
             data: {
               content: `You have interacted with ${custom_id}`,
               flags: MessageFlags.Ephemeral
