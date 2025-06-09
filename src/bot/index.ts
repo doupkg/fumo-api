@@ -61,7 +61,7 @@ interactionsRouter.post(
             }
           })
 
-          return res.json({
+          res.send({
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
               content: `You have interacted with ${custom_id}`,
@@ -70,6 +70,7 @@ interactionsRouter.post(
           })
 
         })(req as Request<never, never, APIMessageComponentInteraction>, res)
+        break
     }
   },
 )
