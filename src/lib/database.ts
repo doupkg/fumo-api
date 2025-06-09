@@ -5,7 +5,7 @@ export default class DatabaseConnection {
   private client: MongoClient | null = null
   private db: Db | null = null
 
-  private constructor() { }
+  private constructor() {}
 
   static get instance(): DatabaseConnection {
     if (!DatabaseConnection._instance) {

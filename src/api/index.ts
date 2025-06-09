@@ -112,13 +112,13 @@ apiRouter.get('/get', async (req: Request, res: Response) => {
 
     return selected
       ? res.json({
-        filtered: true,
-        data: selected,
-      })
+          filtered: true,
+          data: selected,
+        })
       : res.status(444).json({
-        error: 'No Response',
-        message: "Id is invalid or doesn't exist",
-      })
+          error: 'No Response',
+          message: "Id is invalid or doesn't exist",
+        })
   } catch (error) {
     console.error('Error in /get:', error)
     res.status(500).json({

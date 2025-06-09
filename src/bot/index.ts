@@ -47,16 +47,17 @@ interactionsRouter.post(
         break
 
       case InteractionType.MessageComponent:
-        const { data: { custom_id } } = interaction
+        const {
+          data: { custom_id },
+        } = interaction
 
         return res.send({
           type: InteractionResponseType.ChannelMessageWithSource,
           data: {
             content: `You have interacted with ${custom_id}`,
-            flags: MessageFlags.Ephemeral
-          }
+            flags: MessageFlags.Ephemeral,
+          },
         })
-
     }
   },
 )

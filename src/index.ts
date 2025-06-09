@@ -22,7 +22,7 @@ express()
   })
 
 if (development) {
-  Bun.spawn(['bun', 'run', 'upload'], { cwd: "../" })
+  Bun.spawn(['bun', 'run', 'upload'], { cwd: '../' })
 }
 
 process.on('SIGINT', () => {

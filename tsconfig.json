@@ -1,18 +1,18 @@
 {
-    "compilerOptions": {
-        "target": "esnext",
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "esModuleInterop": true,
-        "resolveJsonModule": true,
-        "strict": true,
-        "baseUrl": "./",
-        "rootDir": "./",
-        "paths": {
-            "@/*": ["src/*"]
-        },
-        "types": ["bun-types"]
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "baseUrl": "./",
+    "rootDir": "./",
+    "paths": {
+      "@/*": ["src/*"]
     },
-    "include": ["src", "tests"],
-    "exclude": ["node_modules", "dist"]
+    "types": ["bun-types"]
+  },
+  "include": ["src", "tests"],
+  "exclude": ["node_modules", "dist"]
 }
