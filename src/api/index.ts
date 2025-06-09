@@ -5,9 +5,10 @@ import Fumos from '../data/fumos.json'
 type Query = Record<string, any>
 
 const apiRouter = Router()
+const unixtime = new Date()
 
 apiRouter.get('/', (_req: Request, res: Response) => {
-  res.send(`codeberg is ahh, last deploy: ${Date.now().toString()}`)
+  res.send(`codeberg is ahh, last deploy: ${unixtime.toISOString()}`)
 })
 
 apiRouter.get('/fumos', async (req: Request, res: Response) => {
