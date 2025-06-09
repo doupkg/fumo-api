@@ -7,21 +7,21 @@ import { DataManager } from './lib';
 const port = process.env.PORT || 3000;
 
 if (!process.env.MONGO_URI) {
-    throw new Error('Missing environment variable MONGODB_URI');
+  throw new Error('Missing environment variable MONGODB_URI');
 }
 
 DataManager.instance.init(process.env.MONGO_URI, 'fumo_api', 'fumos');
 
 express()
-    .use('/interactions', interactionsRouter)
-    .use(express.json())
-    .use('/', apiRouter)
-    .listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-    });
+  .use('/interactions', interactionsRouter)
+  .use(express.json())
+  .use('/', apiRouter)
+  .listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 
 process.on('SIGINT', () => {
-    console.log('shutting down hehehehehe');
-    DataManager.instance.close();
-    process.exit(0);
+  console.log('shutting down hehehehehe\n');
+  DataManager.instance.close();
+  process.exit(0);
 });
