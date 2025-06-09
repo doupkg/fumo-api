@@ -8,9 +8,9 @@ import {
   ComponentType,
   APISelectMenuComponent,
 } from 'discord-api-types/v10'
-import fumos from '../../data/fumos.json'
+import Fumos from '../../data/fumos.json'
 
-const selectOptions: APISelectMenuOption[] = fumos.map((fumo) => ({
+const selectOptions: APISelectMenuOption[] = Fumos.map((fumo) => ({
   label: fumo.name,
   value: fumo.value,
 }))

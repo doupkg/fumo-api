@@ -1,5 +1,6 @@
 import { Request, Response, Router } from 'express'
 import { DataManager, Document } from '../lib/'
+import Fumos from '../data/fumos.json'
 
 type Query = Record<string, any>
 
@@ -119,6 +120,21 @@ apiRouter.get('/get', async (req: Request, res: Response) => {
         })
   } catch (error) {
     console.error('Error in /get:', error)
+    res.status(500).json({
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    })
+  }
+})
+
+apiRouter.get('/characters', (_req: Request, res: Response) => {
+  try {
+    return res.status(200).json({
+      filtered: false,
+      data: Fumos,
+    })
+  } catch (error) {
+    console.error('Error in /characters:', error)
     res.status(500).json({
       error: 'Internal Server Error',
       message: error instanceof Error ? error.message : 'Unknown error',
