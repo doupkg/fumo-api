@@ -45,10 +45,11 @@ interactionsRouter.post(
                 case InteractionType.ModalSubmit:
                     res.send({
                         type: InteractionResponseType.ChannelMessageWithSource,
-                        content:
-                            'Hi croo... ' + interaction.data ? interaction.data.custom_id : 'null',
+                        data: {
+                            content: 'received cro',
+                            flags: MessageFlags.Ephemeral,
+                        },
                     })
-
                     break
             }
         } catch (error) {
