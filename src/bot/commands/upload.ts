@@ -42,37 +42,12 @@ const modal: APIModalInteractionResponseCallbackData = {
     })),
 }
 
-const makeActionRow = (userId: string) => ({
-    type: ComponentType.ActionRow,
-    components: [
-        {
-            type: ComponentType.StringSelect,
-            custom_id: `menu:${userId}`,
-            options: selectMenuOptions,
-        },
-    ],
-})
-
 export const uploadCommand = {
     name: 'upload',
     description: 'Upload a new file to the database (names will be displayed in a select menu)',
     type: ApplicationCommandType.ChatInput,
-    options: [
-        {
-            name: 'url',
-            description: 'The URL of the image to upload',
-            type: ApplicationCommandOptionType.String,
-            required: true,
-        },
-        {
-            name: 'title',
-            description: 'The title of the image',
-            type: ApplicationCommandOptionType.String,
-            required: true,
-        },
-    ],
     async execute(
-        interaction: APIChatInputApplicationCommandGuildInteraction,
+        _interaction: APIChatInputApplicationCommandGuildInteraction,
     ): Promise<APIInteractionResponse> {
         return {
             type: InteractionResponseType.Modal,

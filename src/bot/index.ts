@@ -19,12 +19,6 @@ if (!DISCORD_PUBLIC_KEY) {
 
 const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
 
-// function decodeBuffer(encoded: string) {
-//  const buffer = Buffer.from(encoded, 'base64').toString('ascii')
-//
-//  return JSON.parse(buffer)
-// }
-
 const interactionsRouter = Router()
 
 interactionsRouter.post(
@@ -49,6 +43,10 @@ interactionsRouter.post(
                     break
 
                 case InteractionType.ModalSubmit:
+                    res.send({
+                        type: InteractionResponseType.DeferredChannelMessageWithSource,
+                        data: { content: 'Hola' },
+                    })
                     break
             }
         } catch (error) {
