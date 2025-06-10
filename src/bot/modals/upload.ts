@@ -1,18 +1,43 @@
 import {
     APIInteractionResponse,
+    APIMessageTopLevelComponent,
     APIModalInteractionResponse,
+    ComponentType,
     InteractionResponseType,
     MessageFlags,
 } from 'discord-api-types/v10'
+import fumos from '@/data/fumos.json'
+import { encodeBuffer } from '@/lib'
+
+const selectMenuOptions = fumos.map((fumo) => ({
+    label: fumo.name,
+    value: fumo.value,
+}))
+
+const do_components = (interaction: APIModalInteractionResponse): APIMessageTopLevelComponent[] => [
+    {
+        type: ComponentType.ActionRow,
+        components: [
+            {
+                type: ComponentType.StringSelect,
+                custom_id: encodeBuffer('upload_component', {
+                    title_field: interaction.data.title,
+                }),
+                options: selectMenuOptions,
+            },
+        ],
+    },
+]
 
 export const uploadModal = {
     name: 'upload_command_modal',
-    async execute(_interaction: APIModalInteractionResponse): Promise<APIInteractionResponse> {
+    async execute(interaction: APIModalInteractionResponse): Promise<APIInteractionResponse> {
         return {
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
                 content: 'Recivied cro, handled with modals/',
                 flags: MessageFlags.Ephemeral,
+                components: do_components(interaction),
             },
         }
     },

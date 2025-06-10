@@ -8,6 +8,7 @@ import {
 import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
 import Commands from './commands'
+import Components from './components/'
 import Modals from './modals'
 
 const { DISCORD_PUBLIC_KEY } = process.env
@@ -17,6 +18,9 @@ if (!DISCORD_PUBLIC_KEY) {
 }
 
 const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
+const componentCollection = new Map<string, any>(
+    Components.map((component) => [component.name, component]),
+)
 const modalCollection = new Map<string, any>(Modals.map((modal) => [modal.name, modal]))
 
 const interactionsRouter = Router()
@@ -41,6 +45,14 @@ interactionsRouter.post(
 
                     res.send(cmd_data)
                     break
+
+                case InteractionType.MessageComponent:
+                    const component = componentCollection.get(
+                        interaction.data.custom_id.split(':')[0],
+                    )
+                    const component_data = await component?.execute(interaction)
+
+                    res.send(component_data)
 
                 case InteractionType.ModalSubmit:
                     const modal = modalCollection.get(interaction.data.custom_id)

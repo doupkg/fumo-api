@@ -4,17 +4,10 @@ import {
     ApplicationCommandType,
     APIInteractionResponse,
     InteractionResponseType,
-    ApplicationCommandOptionType,
     APIComponentInModalActionRow,
     APIModalInteractionResponseCallbackData,
     APIChatInputApplicationCommandGuildInteraction,
 } from 'discord-api-types/v10'
-import fumos from '@/data/fumos.json'
-
-const selectMenuOptions = fumos.map((fumo) => ({
-    label: fumo.name,
-    value: fumo.value,
-}))
 
 const baseComponent: Omit<APIComponentInModalActionRow, 'custom_id' | 'label'> = {
     type: ComponentType.TextInput,
@@ -26,12 +19,13 @@ const titleComponent: APIComponentInModalActionRow = {
     ...baseComponent,
     custom_id: 'title_input',
     label: 'Title this image',
-    max_length: 60,
+    max_length: 50,
 }
 const urlComponent: APIComponentInModalActionRow = {
     ...baseComponent,
     custom_id: 'url_input',
     label: 'The file URL',
+    max_length: 100,
 }
 const modal: APIModalInteractionResponseCallbackData = {
     title: 'Fumo Submit Form',
