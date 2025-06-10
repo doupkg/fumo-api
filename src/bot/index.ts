@@ -4,12 +4,11 @@ import {
     InteractionType,
     InteractionResponseType,
     MessageFlags,
-    ComponentType,
-    TextInputStyle,
 } from 'discord-api-types/v10'
 import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
 import Commands from './commands'
+import Modals from './modals'
 
 const { DISCORD_PUBLIC_KEY } = process.env
 
@@ -18,6 +17,7 @@ if (!DISCORD_PUBLIC_KEY) {
 }
 
 const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
+const modalCollection = new Map<string, any>(Modals.map((modal) => [modal.name, modal]))
 
 const interactionsRouter = Router()
 
@@ -43,13 +43,10 @@ interactionsRouter.post(
                     break
 
                 case InteractionType.ModalSubmit:
-                    res.send({
-                        type: InteractionResponseType.ChannelMessageWithSource,
-                        data: {
-                            content: 'received cro',
-                            flags: MessageFlags.Ephemeral,
-                        },
-                    })
+                    const modal = modalCollection.get(interaction.data.custom_id)
+                    const modal_data = await modal?.execute(interaction)
+
+                    res.send(modal_data)
                     break
             }
         } catch (error) {
