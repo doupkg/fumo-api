@@ -25,16 +25,12 @@ response of all endpoints:
 data structure:
 
 ```typescript
-{ id: string, url: string, filetype: "gif" | "png" | "jpg" | "webp", title: string, fumos: characters[]  }
+{ id: string, url: string, filetype: "gif" | "png" | "jpg" | "webp", title: string, characters: characters[]  }
 ```
 
-characters can be found at `src/data/fumos.json` :)
+characters can be found at `src/data/characters.json` :)
 
 > [!NOTE]
 > Although we use MongoDB clusters to store our database, you are highly recommended to use it locally create one local with MeowDB or QuickDB instead of Mongoose. Btw, we use redis to make it faster and storage a local cache
 
 Powered by [bun](https://bun.sh/), docker and onrecord. Nix is just for development
-
-```
-
-```
