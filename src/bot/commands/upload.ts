@@ -34,7 +34,7 @@ const urlComponent: APIComponentInModalActionRow = {
     label: 'The file URL',
 }
 const modal: APIModalInteractionResponseCallbackData = {
-    title: 'aaaa',
+    title: 'Fumo Submit Form',
     custom_id: 'upload_command_modal',
     components: [titleComponent, urlComponent].map((component) => ({
         type: ComponentType.ActionRow,

@@ -6,7 +6,7 @@ import {
 } from 'discord-api-types/v10'
 
 export const uploadModal = {
-    name: 'upload_modal',
+    name: 'upload_command_modal',
     async execute(_interaction: APIModalInteractionResponse): Promise<APIInteractionResponse> {
         return {
             type: InteractionResponseType.ChannelMessageWithSource,
