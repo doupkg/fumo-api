@@ -50,7 +50,7 @@ interactionsRouter.post(
               type: InteractionResponseType.Modal,
               data: {
                 custom_id: 'upload_modal',
-                title: 'Submit a your Image to being uploaded to our DataBase!',
+                title: 'Submit your Fumo',
                 components: [
                   {
                     type: ComponentType.ActionRow,
@@ -58,7 +58,7 @@ interactionsRouter.post(
                       {
                         type: ComponentType.TextInput,
                         custom_id: 'upload_title',
-                        label: 'Title for your image,',
+                        label: 'Title for your image',
                         style: TextInputStyle.Short,
                         min_lenght: 1,
                         max_lenght: 100,

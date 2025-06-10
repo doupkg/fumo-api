@@ -1,5 +1,4 @@
 import {
-  APIInteractionResponseCallbackData,
   ApplicationCommandType,
   type APIChatInputApplicationCommandGuildInteraction,
 } from 'discord-api-types/v10'
