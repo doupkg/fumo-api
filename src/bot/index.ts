@@ -70,12 +70,12 @@ interactionsRouter.post(
                 ],
               },
             })
+          } else {
+            res.send({
+              type: InteractionResponseType.ChannelMessageWithSource,
+              data: cmd_data,
+            })
           }
-
-          res.send({
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: cmd_data,
-          })
 
           break
 

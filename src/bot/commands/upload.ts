@@ -8,11 +8,7 @@ export const uploadCommand = {
   name: 'upload',
   description: 'Upload a new file to the database (names will be displayed in a select menu)',
   type: ApplicationCommandType.ChatInput,
-  async execute(
-    _interaction: APIChatInputApplicationCommandGuildInteraction,
-  ): Promise<APIInteractionResponseCallbackData> {
-    return {
-      content: 'Your modal has been deployed',
-    }
+  async execute(_interaction: APIChatInputApplicationCommandGuildInteraction): Promise<void> {
+    return
   },
 }
