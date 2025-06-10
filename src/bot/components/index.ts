@@ -1,1 +1,3 @@
-export default []
+import { uploadComponent } from './upload'
+
+export default [uploadComponent]
