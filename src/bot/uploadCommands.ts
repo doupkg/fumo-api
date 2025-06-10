@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { Routes } from 'discord-api-types/v10'
-import commands from './commands'
+import Commands from './commands'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_TOKEN, DISCORD_GUILD_ID } = process.env
 
@@ -19,6 +19,6 @@ fetch(apiUrl, {
         Authorization: `Bot ${DISCORD_CLIENT_TOKEN}`,
         'Content-Type': 'application/json',
     },
-    body: JSON.stringify(commands.map(({ execute, ...rest }) => rest)),
+    body: JSON.stringify(Commands.map(({ execute, ...rest }) => rest)),
     method: 'PUT',
 }).then(async (res) => console.log(await res.json()))

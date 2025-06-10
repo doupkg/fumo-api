@@ -1,6 +1,6 @@
 import { type Request, type Response, Router } from 'express'
 import { DataManager, type Document } from '../lib/'
-import Fumos from '../data/fumos.json'
+import Characters from '../data/characters.json'
 
 type Query = Record<string, any>
 
@@ -11,7 +11,7 @@ apiRouter.get('/', (_req: Request, res: Response) => {
     res.send(`codeberg is ahh, last deploy: ${unixtime.toUTCString()}`)
 })
 
-apiRouter.get('/fumos', async (req: Request, res: Response) => {
+apiRouter.get('/characters', async (req: Request, res: Response) => {
     try {
         const { has, filetype } = req.query
         const query: Query = {}
@@ -46,11 +46,11 @@ apiRouter.get('/fumos', async (req: Request, res: Response) => {
                 id: doc._id.toString(),
                 url: doc.url,
                 filetype: doc.filetype,
-                fumos: doc.fumos,
+                characters: doc.characters,
             })),
         })
     } catch (error) {
-        console.error('Error in /fumos:', error)
+        console.error('Error in /characters:', error)
         res.status(500).json({
             error: 'Internal Server Error',
             message: error instanceof Error ? error.message : 'Unknown error',
@@ -105,7 +105,7 @@ apiRouter.get('/get', async (req: Request, res: Response) => {
         if (!id)
             return res.status(400).json({
                 error: 'Bad Request',
-                message: "You cannot get a fumo without it's id, try /fumos instead",
+                message: "You cannot get a fumo without it's id, try /characters instead",
             })
 
         const selected = await DataManager.instance.getById(String(id))
@@ -132,7 +132,7 @@ apiRouter.get('/characters', (_req: Request, res: Response) => {
     try {
         return res.status(200).json({
             filtered: false,
-            data: Fumos,
+            data: Characters,
         })
     } catch (error) {
         console.error('Error in /characters:', error)

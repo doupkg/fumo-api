@@ -1,7 +1,7 @@
 import { type Collection, type Filter, type Condition, ObjectId } from 'mongodb'
 import NodeCache from 'node-cache'
 import DatabaseConnection from './database'
-import fumos from '../data/fumos.json'
+import Characters from '../data/characters.json'
 import sift from 'sift'
 
 const filetypes = ['gif', 'png', 'jpg', 'webp']
@@ -10,7 +10,7 @@ export type InsertionData = {
     url: string
     title: string
     filetype: 'gif' | 'png' | 'jpg' | 'webp'
-    fumos: string[]
+    characters: string[]
 }
 
 export type Document = InsertionData & {
@@ -47,7 +47,7 @@ export class DataManager {
     }
 
     validateFumos(names: string[]) {
-        return names.every((name) => fumos.some((fumo) => fumo.value === name))
+        return names.every((name) => Characters.some((fumo) => fumo.value === name))
     }
 
     async init(uri: string, db: string, collection: string): Promise<void> {
@@ -73,7 +73,7 @@ export class DataManager {
             !data.url ||
             !data.title ||
             !this.validateFiletype(data.filetype) ||
-            !this.validateFumos(data.fumos)
+            !this.validateFumos(data.characters)
         ) {
             throw new Error('Invalid parameters')
         }

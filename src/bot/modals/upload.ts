@@ -2,14 +2,15 @@ import {
     APIInteractionResponse,
     APIMessageTopLevelComponent,
     APIModalInteractionResponse,
+    ButtonStyle,
     ComponentType,
     InteractionResponseType,
     MessageFlags,
 } from 'discord-api-types/v10'
-import fumos from '@/data/fumos.json'
+import Characters from '@/data/characters.json'
 import { encodeBuffer } from '@/lib'
 
-const selectMenuOptions = fumos.map((fumo) => ({
+const selectMenuOptions = Characters.map((fumo) => ({
     label: fumo.name,
     value: fumo.value,
 }))
@@ -23,8 +24,14 @@ const do_components = (
             {
                 type: ComponentType.StringSelect,
                 custom_id: encodeBuffer('characters_input', {}),
-                max_values: fumos.length,
+                max_values: Characters.length,
                 options: selectMenuOptions,
+            },
+            {
+                type: ComponentType.Button,
+                custom_id: encodeBuffer('send_input', {}),
+                style: ButtonStyle.Primary,
+                disabled: true,
             },
         ],
     },
