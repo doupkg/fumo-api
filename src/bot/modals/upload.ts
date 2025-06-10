@@ -27,12 +27,6 @@ const do_components = (
                 max_values: Characters.length,
                 options: selectMenuOptions,
             },
-            {
-                type: ComponentType.Button,
-                custom_id: encodeBuffer('send_input', {}),
-                style: ButtonStyle.Primary,
-                disabled: true,
-            },
         ],
     },
 ]
