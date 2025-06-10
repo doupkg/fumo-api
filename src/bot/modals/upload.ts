@@ -3,7 +3,6 @@ import {
     APIInteractionResponse,
     APIMessageTopLevelComponent,
     APIModalInteractionResponse,
-    ButtonStyle,
     ComponentType,
     InteractionResponseType,
     MessageFlags,
@@ -45,14 +44,14 @@ export const uploadModal = {
                             (x): APIEmbedField =>
                                 Object({
                                     name: x.components[0].custom_id,
-                                    value: () => {
+                                    value: (() => {
                                         const ctx = x.components[0].value?.toLowerCase()
                                         if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
                                             return `[${ctx}](${ctx})`
                                         return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
                                             letter.toUpperCase(),
                                         )
-                                    },
+                                    })(),
                                 }),
                         ),
                     },
