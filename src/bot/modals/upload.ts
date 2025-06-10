@@ -35,7 +35,17 @@ export const uploadModal = {
         return {
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
-                content: 'Recivied cro, handled with modals/',
+                embeds: [
+                    {
+                        title: 'Preview your submition',
+                        fields: interaction.data.components.map((x) =>
+                            Object({
+                                name: x.components[0].custom_id,
+                                value: x.components[0].value,
+                            }),
+                        ) as unknown as { name: string; value: string }[],
+                    },
+                ],
                 flags: MessageFlags.Ephemeral,
                 components: do_components(interaction),
             },
