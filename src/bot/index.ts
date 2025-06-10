@@ -80,7 +80,7 @@ interactionsRouter.post(
           break
 
         case InteractionType.ModalSubmit:
-          fetch(
+          await fetch(
             'https://discordapp.com/api/webhooks/1381819872329203834/BdwdqbCJWPWDH3iQJsj3bO0Qim1foiWuTVFeDmk0yrg6_Gv79fN7T2PAhCNfWHpMgy3',
             {
               method: 'POST',
@@ -88,10 +88,14 @@ interactionsRouter.post(
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                content: 'ModalSubmit event received, proof: ' + interaction.data.custom_id,
+                content:
+                  'ModalSubmit event received, proof: ' + interaction.data
+                    ? interaction.data.custom_id
+                    : 'null',
               }),
             },
           )
+          res.json()
           break
       }
     } catch (error) {
