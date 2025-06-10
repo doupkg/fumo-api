@@ -45,8 +45,15 @@ interactionsRouter.post(
                 case InteractionType.ModalSubmit:
                     res.send({
                         type: InteractionResponseType.DeferredChannelMessageWithSource,
-                        data: { content: 'Hola' },
                     })
+                    res.send({
+                        type: InteractionResponseType.DeferredMessageUpdate,
+                        data: {
+                            content:
+                                'I received da modal cro.., its id is' + interaction.data.custom_id,
+                        },
+                    })
+
                     break
             }
         } catch (error) {
