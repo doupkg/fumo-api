@@ -4,7 +4,8 @@ import {
   InteractionType,
   InteractionResponseType,
   MessageFlags,
-  APIChatInputApplicationCommandInteraction,
+  ComponentType,
+  TextInputStyle,
 } from 'discord-api-types/v10'
 import { type Request, type Response, Router } from 'express'
 import { verifyKeyMiddleware } from 'discord-interactions'
@@ -18,11 +19,11 @@ if (!DISCORD_PUBLIC_KEY) {
 
 const commandCollection = new Map<string, any>(Commands.map((command) => [command.name, command]))
 
-function decodeBuffer(encoded: string) {
-  const buffer = Buffer.from(encoded, 'base64').toString('ascii')
-
-  return JSON.parse(buffer)
-}
+// function decodeBuffer(encoded: string) {
+//  const buffer = Buffer.from(encoded, 'base64').toString('ascii')
+//
+//  return JSON.parse(buffer)
+// }
 
 const interactionsRouter = Router()
 
@@ -43,48 +44,46 @@ interactionsRouter.post(
           const command = commandCollection.get(interaction.data.name)
           const cmd_data = await command?.execute(interaction)
           console.dir(cmd_data, { depth: null })
-          if (interaction.data.name === "upload") {
+
+          if (interaction.data.name === 'upload') {
             res.send({
               type: InteractionResponseType.Modal,
               data: {
-                custom_id: "upload_modal",
-                title: "Submit a Fumo Image",
-                components: [{
-                  type: 1,
-                  components: [{
-                    type: 4,
-                    custom_id: "upload_title",
-                    label: "Title for your Image",
-                    style: 1,
-                    min_lenght: 1,
-                    max_lenght: 100,
-                    placeholder: "How you would call this image?",
-                    required: true
-                  }]
-                }],
-              }
-            })
-          } else {
-            res.send({
-              type: InteractionResponseType.ChannelMessageWithSource,
-              data: cmd_data,
+                custom_id: 'upload_modal',
+                title: 'Submit a your Image to being uploaded to our DataBase!',
+                components: [
+                  {
+                    type: ComponentType.ActionRow,
+                    components: [
+                      {
+                        type: ComponentType.TextInput,
+                        custom_id: 'upload_title',
+                        label: 'Title for your image,',
+                        style: TextInputStyle.Short,
+                        min_lenght: 1,
+                        max_lenght: 100,
+                        placeholder: 'How you would call this image?',
+                        required: true,
+                      },
+                    ],
+                  },
+                ],
+              },
             })
           }
+
+          res.send({
+            type: InteractionResponseType.ChannelMessageWithSource,
+            data: cmd_data,
+          })
+
           break
 
         case InteractionType.ModalSubmit:
-          const {
-            data: { custom_id },
-          } = interaction
-
-          const { author_id } = decodeBuffer(custom_id) as {
-            author_id: string
-          }
-
           return res.send({
-            type: InteractionResponseType.ChannelMessageWithSource,
+            type: InteractionResponseType.UpdateMessage,
             data: {
-              content: `The original command was executed by ${author_id}, you have interacted with it`,
+              content: `You completed your modal, good job lil cro..`,
               flags: MessageFlags.Ephemeral,
             },
           })

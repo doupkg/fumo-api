@@ -1,4 +1,5 @@
 import {
+  APIInteractionResponseCallbackData,
   ApplicationCommandType,
   type APIChatInputApplicationCommandGuildInteraction,
 } from 'discord-api-types/v10'
@@ -8,10 +9,10 @@ export const uploadCommand = {
   description: 'Upload a new file to the database (names will be displayed in a select menu)',
   type: ApplicationCommandType.ChatInput,
   async execute(
-    _interaction: APIChatInputApplicationCommandGuildInteraction & {
-      data: { options: { value: string }[] }
-    },
-  ): Promise<void> {
-    return
+    _interaction: APIChatInputApplicationCommandGuildInteraction,
+  ): Promise<APIInteractionResponseCallbackData> {
+    return {
+      content: 'Your modal has been deployed',
+    }
   },
 }
