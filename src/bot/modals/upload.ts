@@ -1,4 +1,5 @@
 import {
+    APIEmbedField,
     APIInteractionResponse,
     APIMessageTopLevelComponent,
     APIModalInteractionResponse,
@@ -40,19 +41,20 @@ export const uploadModal = {
                 embeds: [
                     {
                         title: 'Preview your submittion',
-                        fields: interaction.data.components.map((x) =>
-                            Object({
-                                name: x.components[0].custom_id,
-                                value: () => {
-                                    const ctx = x.components[0].value?.toLowerCase()
-                                    if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
-                                        return `[${ctx}](${ctx})`
-                                    return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-                                        letter.toUpperCase(),
-                                    )
-                                },
-                            }),
-                        ) as unknown as { name: string; value: string }[],
+                        fields: interaction.data.components.map(
+                            (x): APIEmbedField =>
+                                Object({
+                                    name: x.components[0].custom_id,
+                                    value: () => {
+                                        const ctx = x.components[0].value?.toLowerCase()
+                                        if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
+                                            return `[${ctx}](${ctx})`
+                                        return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+                                            letter.toUpperCase(),
+                                        )
+                                    },
+                                }),
+                        ),
                     },
                 ],
                 flags: MessageFlags.Ephemeral,
