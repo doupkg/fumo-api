@@ -8,12 +8,12 @@ import {
 export const uploadComponent = {
     name: 'upload_component',
     async execute(interaction: APIMessageComponentInteraction): Promise<APIInteractionResponse> {
-        const { title_field }: Record<string, string> = decodeBuffer(interaction.data.custom_id)
+        const ctx: Record<string, string> = decodeBuffer(interaction.data.custom_id)
 
         return {
             type: InteractionResponseType.UpdateMessage,
             data: {
-                content: 'ActionRow recivied, the modal title was: ' + title_field,
+                content: 'ActionRow recivied, the modal title was: ' + ctx,
             },
         }
     },
