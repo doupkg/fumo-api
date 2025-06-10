@@ -2,6 +2,7 @@ import {
     APIInteractionResponse,
     APIMessageComponentSelectMenuInteraction,
     InteractionResponseType,
+    APIEmbedField,
 } from 'discord-api-types/v10'
 
 export const charactersComponent = {
@@ -15,12 +16,10 @@ export const charactersComponent = {
                 embeds: [
                     {
                         ...interaction.message.embeds[0],
-                        fields: [
-                            {
-                                name: this.name,
-                                value: interaction.data.values.join(' '),
-                            },
-                        ],
+                        fields: interaction.message.embeds[0]?.fields?.push({
+                            name: this.name,
+                            value: interaction.data.values.join(' '),
+                        }) as unknown as APIEmbedField[],
                     },
                 ],
             },
