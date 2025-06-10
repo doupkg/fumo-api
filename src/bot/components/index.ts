@@ -1,3 +1,3 @@
-import { uploadComponent } from './upload'
+import { charactersComponent } from './characters'
 
-export default [uploadComponent]
+export default [charactersComponent]

@@ -14,15 +14,16 @@ const selectMenuOptions = fumos.map((fumo) => ({
     value: fumo.value,
 }))
 
-const do_components = (interaction: APIModalInteractionResponse): APIMessageTopLevelComponent[] => [
+const do_components = (
+    _interaction: APIModalInteractionResponse,
+): APIMessageTopLevelComponent[] => [
     {
         type: ComponentType.ActionRow,
         components: [
             {
                 type: ComponentType.StringSelect,
-                custom_id: encodeBuffer('upload_component', {
-                    title_field: interaction.data.title,
-                }),
+                custom_id: encodeBuffer('characters_input', {}),
+                max_values: fumos.length,
                 options: selectMenuOptions,
             },
         ],
@@ -37,7 +38,7 @@ export const uploadModal = {
             data: {
                 embeds: [
                     {
-                        title: 'Preview your submition',
+                        title: 'Preview your submittion',
                         fields: interaction.data.components.map((x) =>
                             Object({
                                 name: x.components[0].custom_id,
