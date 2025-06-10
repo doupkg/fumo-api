@@ -2,9 +2,29 @@ import {
     APIEmbedField,
     APIInteractionResponse,
     APIMessageComponentSelectMenuInteraction,
+    APIMessageTopLevelComponent,
+    ButtonStyle,
+    ComponentType,
     InteractionResponseType,
 } from 'discord-api-types/v10'
 import Characters from '@/data/characters.json'
+import { encodeBuffer } from '@/lib'
+
+const do_components = (
+    _interaction: APIMessageComponentSelectMenuInteraction,
+): APIMessageTopLevelComponent[] => [
+    {
+        type: ComponentType.ActionRow,
+        components: [
+            {
+                type: ComponentType.Button,
+                style: ButtonStyle.Primary,
+                custom_id: encodeBuffer('send_input', {}),
+                label: 'Send this to Administration',
+            },
+        ],
+    },
+]
 
 export const charactersComponent = {
     name: 'characters_input',
@@ -32,6 +52,7 @@ export const charactersComponent = {
                         fields: prev_fields as APIEmbedField[],
                     },
                 ],
+                components: do_components(interaction),
             },
         }
     },
