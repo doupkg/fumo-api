@@ -43,26 +43,48 @@ interactionsRouter.post(
           const command = commandCollection.get(interaction.data.name)
           const cmd_data = await command?.execute(interaction)
           console.dir(cmd_data, { depth: null })
-          res.send({
-            type: InteractionResponseType.ChannelMessageWithSource,
-            data: cmd_data,
-          })
+          if (interaction.data.name === "upload") {
+            res.send({
+              type: InteractionResponseType.Modal,
+              data: {
+                custom_id: "upload_modal",
+                title: "Submit a Fumo Image",
+                components: [{
+                  type: 1,
+                  components: [{
+                    type: 4,
+                    custom_id: "upload_title",
+                    label: "Title for your Image",
+                    style: 1,
+                    min_lenght: 1,
+                    max_lenght: 100,
+                    placeholder: "How you would call this image?",
+                    required: true
+                  }]
+                }],
+              }
+            })
+          } else {
+            res.send({
+              type: InteractionResponseType.ChannelMessageWithSource,
+              data: cmd_data,
+            })
+          }
           break
 
-        case InteractionType.MessageComponent:
+        case InteractionType.ModalSubmit:
           const {
             data: { custom_id },
           } = interaction
 
-          const { options, author_id } = decodeBuffer(custom_id) as {
-            options: { title: string }
+          const { author_id } = decodeBuffer(custom_id) as {
             author_id: string
           }
 
           return res.send({
             type: InteractionResponseType.ChannelMessageWithSource,
             data: {
-              content: `The original command was executed by ${author_id}, you have interacted with ${options.title ?? 'Fallo en la matrix'}`,
+              content: `The original command was executed by ${author_id}, you have interacted with it`,
               flags: MessageFlags.Ephemeral,
             },
           })
