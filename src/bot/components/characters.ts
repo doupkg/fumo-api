@@ -9,16 +9,18 @@ export const charactersComponent = {
     async execute(
         interaction: APIMessageComponentSelectMenuInteraction,
     ): Promise<APIInteractionResponse> {
-        interaction.message.embeds[0]?.fields?.push({
-            name: this.name,
-            value: interaction.data.values.join(' '),
-        })
+        const prev_fields = interaction.message.embeds[0]?.fields ?? []
+        if (prev_fields.find((e) => e.name === this.name)) {
+            prev_fields.pop()
+        }
+        prev_fields.push(Object({ name: this.name, value: interaction.data.values }))
         return {
             type: InteractionResponseType.UpdateMessage,
             data: {
                 embeds: [
                     {
                         ...interaction.message.embeds[0],
+                        fields: prev_fields,
                     },
                 ],
             },
