@@ -43,11 +43,14 @@ export const uploadModal = {
                         fields: interaction.data.components.map((x) =>
                             Object({
                                 name: x.components[0].custom_id,
-                                value: x.components[0].value
-                                    ?.toLowerCase()
-                                    .replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+                                value: () => {
+                                    const ctx = x.components[0].value?.toLowerCase()
+                                    if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
+                                        return `[${ctx}](${ctx})`
+                                    return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
                                         letter.toUpperCase(),
-                                    ),
+                                    )
+                                },
                             }),
                         ) as unknown as { name: string; value: string }[],
                     },

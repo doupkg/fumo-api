@@ -11,7 +11,7 @@ import Characters from '@/data/characters.json'
 import { encodeBuffer } from '@/lib'
 
 const do_components = (
-    _interaction: APIMessageComponentSelectMenuInteraction,
+    interaction: APIMessageComponentSelectMenuInteraction,
 ): APIMessageTopLevelComponent[] => [
     {
         type: ComponentType.ActionRow,
@@ -19,8 +19,13 @@ const do_components = (
             {
                 type: ComponentType.Button,
                 style: ButtonStyle.Primary,
-                custom_id: encodeBuffer('send_input', {}),
-                label: 'Send this to Administration',
+                custom_id: encodeBuffer('send_input', { user_id: interaction.member?.user.id }),
+                label: 'Send Request',
+                emoji: {
+                    name: 'raymo',
+                    animated: true,
+                    id: '980582614765273148',
+                },
             },
         ],
     },
