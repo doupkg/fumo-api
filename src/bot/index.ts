@@ -5,7 +5,7 @@ import {
     InteractionResponseType,
     MessageFlags,
 } from 'discord-api-types/v10'
-import { type Request, type Response, Router } from 'express'
+import { Elysia } from 'elysia'
 import { verifyKeyMiddleware } from 'discord-interactions'
 import Commands from './commands'
 import Components from './components/'
@@ -21,12 +21,12 @@ const commandCollection = new Map<string, any>(Commands.map((command) => [comman
 const componentCollection = new Map<string, any>(Components.map((component) => [component.name, component]))
 const modalCollection = new Map<string, any>(Modals.map((modal) => [modal.name, modal]))
 
-const interactionsRouter = Router()
+const interactionsRouter = new Elysia()
 
 interactionsRouter.post(
     '/',
     verifyKeyMiddleware(DISCORD_PUBLIC_KEY),
-    async (req: Request<never, APIInteractionResponse, APIInteraction>, res: Response) => {
+    async (req: never | APIInteractionResponse | APIInteraction, res: Response) => {
         const interaction = req.body
 
         try {
