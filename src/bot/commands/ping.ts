@@ -5,15 +5,13 @@ import {
     APIInteractionResponse,
 } from 'discord-api-types/v10'
 
-import { DataManager } from '../../lib/manager'
+import { DataManager } from '@/lib'
 
 export const pingCommand = {
     name: 'ping',
     description: 'Errrrrrrrrmmmmmm',
     type: ApplicationCommandType.ChatInput,
-    async execute(
-        _interaction: APIChatInputApplicationCommandGuildInteraction,
-    ): Promise<APIInteractionResponse> {
+    async execute(_interaction: APIChatInputApplicationCommandGuildInteraction): Promise<APIInteractionResponse> {
         const start = Date.now()
         const count = await DataManager.instance.db?.countDocuments()
         const end = Date.now()

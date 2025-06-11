@@ -61,20 +61,13 @@ export class DataManager {
         this.cacheKeyPrefix = `${collection}:document:`
 
         const data = await this.getAll()
-        console.log(
-            `Database initialized for collection ${collection} with ${data.length} documents`,
-        )
+        console.log(`Database initialized for collection ${collection} with ${data.length} documents`)
     }
 
     async upload(data: InsertionData): Promise<Document> {
         this.checkInitialized()
 
-        if (
-            !data.url ||
-            !data.title ||
-            !this.validateFiletype(data.filetype) ||
-            !this.validateFumos(data.characters)
-        ) {
+        if (!data.url || !data.title || !this.validateFiletype(data.filetype) || !this.validateFumos(data.characters)) {
             throw new Error('Invalid parameters')
         }
 
@@ -168,9 +161,7 @@ export class DataManager {
 
         const cacheKeys = this.cache.keys().filter((key) => key.startsWith(this.cacheKeyPrefix))
         if (cacheKeys) {
-            const cacheData = cacheKeys
-                .map((key) => this.cache.get<Document>(key))
-                .filter((data) => data !== undefined)
+            const cacheData = cacheKeys.map((key) => this.cache.get<Document>(key)).filter((data) => data !== undefined)
             return cacheData
         }
 

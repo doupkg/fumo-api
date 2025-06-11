@@ -15,9 +15,7 @@ const selectMenuOptions = Characters.map((fumo) => ({
     value: fumo.value,
 }))
 
-const do_components = (
-    _interaction: APIModalInteractionResponse,
-): APIMessageTopLevelComponent[] => [
+const do_components = (_interaction: APIModalInteractionResponse): APIMessageTopLevelComponent[] => [
     {
         type: ComponentType.ActionRow,
         components: [
@@ -46,11 +44,8 @@ export const uploadModal = {
                                     name: x.components[0].custom_id,
                                     value: (() => {
                                         const ctx = x.components[0].value?.toLowerCase()
-                                        if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
-                                            return new URL(ctx, ctx)
-                                        return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
-                                            letter.toUpperCase(),
-                                        )
+                                        if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/)) return new URL(ctx, ctx)
+                                        return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase())
                                     })(),
                                 }),
                         ),

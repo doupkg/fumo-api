@@ -10,9 +10,7 @@ import {
 import Characters from '@/data/characters.json'
 import { encodeBuffer } from '@/lib'
 
-const do_components = (
-    interaction: APIMessageComponentSelectMenuInteraction,
-): APIMessageTopLevelComponent[] => [
+const do_components = (interaction: APIMessageComponentSelectMenuInteraction): APIMessageTopLevelComponent[] => [
     {
         type: ComponentType.ActionRow,
         components: [
@@ -33,9 +31,7 @@ const do_components = (
 
 export const charactersComponent = {
     name: 'characters_input',
-    async execute(
-        interaction: APIMessageComponentSelectMenuInteraction,
-    ): Promise<APIInteractionResponse> {
+    async execute(interaction: APIMessageComponentSelectMenuInteraction): Promise<APIInteractionResponse> {
         const prev_fields = interaction.message.embeds[0]?.fields ?? null
         if (prev_fields!.find((e) => e.name === this.name)) {
             prev_fields!.pop()
@@ -43,9 +39,7 @@ export const charactersComponent = {
         prev_fields!.push(
             Object({
                 name: this.name,
-                value: interaction.data.values
-                    .map((e) => Characters.find((x) => x.value === e)?.name)
-                    .join(', '),
+                value: interaction.data.values.map((e) => Characters.find((x) => x.value === e)?.name).join(', '),
             }),
         )
         return {
