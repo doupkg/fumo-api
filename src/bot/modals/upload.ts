@@ -47,7 +47,7 @@ export const uploadModal = {
                                     value: (() => {
                                         const ctx = x.components[0].value?.toLowerCase()
                                         if (ctx?.match(/(https?:\/\/.*\.(?:png|jpg))/))
-                                            return `[${ctx}](${ctx})`
+                                            return new URL(ctx, ctx)
                                         return ctx?.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
                                             letter.toUpperCase(),
                                         )
