@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import express from 'express'
 import apiRouter from './api'
 import interactionsRouter from './bot'

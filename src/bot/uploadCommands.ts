@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { Routes } from 'discord-api-types/v10'
 import Commands from './commands'
 
