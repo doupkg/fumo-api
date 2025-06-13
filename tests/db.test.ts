@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
-import { DataManager } from '../src/lib/'
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test'
-import fumos from '../src/data/fumos.json'
+import { DataManager } from '@/lib/'
+import Characters from '@/data/characters.json'
 
 let mongoServer: MongoMemoryServer
 
@@ -27,7 +27,7 @@ describe('database', () => {
             url: 'https://example.com',
             title: 'test',
             filetype: 'png',
-            fumos: fumos.slice(0, 5).map((fumo) => fumo.value),
+            characters: Characters.slice(0, 5).map((character) => character.value),
         })
 
         expect(
@@ -35,7 +35,7 @@ describe('database', () => {
                 url: 'https://example.com',
                 title: 'test2',
                 filetype: 'jpg',
-                fumos: fumos.slice(5, 10).map((fumo) => fumo.value),
+                characters: Characters.slice(5, 10).map((character) => character.value),
             }),
         ).rejects.toThrow('File already exists')
     })
