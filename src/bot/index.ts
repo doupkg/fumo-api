@@ -61,13 +61,13 @@ Interactions.post(
         /**
          * Code taken from discord-interactions source code
          **/
-        async beforeHandle({ request }) {
-            let { body, destination, headers } = request
+        async beforeHandle({ request, headers, body }) {
+            let { destination } = request
 
             // @ts-ignore
-            const timestamp = headers['X-Signature-Timestamp']
+            const timestamp = headers['X-Signature-Timestamp'] || ''
             // @ts-ignore
-            const signature = headers['X-Signature-Ed25519']
+            const signature = headers['X-Signature-Ed25519'] || ''
 
             if (!timestamp || !signature) return status(401, 'Invalid signature')
 
