@@ -5,7 +5,7 @@
         "name": "MIT",
         "url": "https://mit-license.org/"
     },
-    "description": "",
+    "description": "A Rest API to get image of fumos (Touhou plushies)",
     "scripts": {
         "start": "bun src/index.ts",
         "dev": "bun --hot src/index.ts",

@@ -10,6 +10,19 @@ export function decodeBuffer(encoded: string) {
     return JSON.parse(buffer)
 }
 
+export function validateQuery(query: { has?: string[]; filetype?: string }) {
+    const temp = {} as { has: { $all: string[] }; filetype: string }
+    if (query.has) {
+        temp.has = { $all: query.has }
+    }
+
+    if (query.filetype) {
+        temp.filetype = query.filetype
+    }
+
+    return temp
+}
+
 /**
  * Code taken from discord-interactions
  */
