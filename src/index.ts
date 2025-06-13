@@ -1,31 +1,41 @@
-import express from 'express'
-import apiRouter from './api'
-import interactionsRouter from './bot'
-import { DataManager } from './lib'
+import { Elysia } from 'elysia'
+import { DataManager, Logger } from '@/lib'
+import Rest from './api'
+import Interactions from './bot'
+import Package from '../package.json'
+import swagger from '@elysiajs/swagger'
 
+const db_uri = process.env.MONGO_URI
 const port = process.env.PORT || 3000
-const development = process.env.DEVELOPMENT || false
 
-if (!process.env.MONGO_URI) {
-    throw new Error('Missing environment variable MONGODB_URI')
+if (!db_uri) {
+    throw new Error('MONGO_URI is not an environment variable declared')
 }
 
-DataManager.instance.init(process.env.MONGO_URI, 'fumo_api', 'fumos')
+;(async () => {
+    await DataManager.instance.init(db_uri, 'fumo_api', 'fumos')
 
-express()
-    .use('/interactions', interactionsRouter)
-    .use(express.json())
-    .use('/', apiRouter)
-    .listen(port, () => {
-        console.log(`Server is running on port ${port}`)
-    })
-
-if (development) {
-    Bun.spawn(['bun', 'run upload'], { cwd: '../' })
-}
+    new Elysia()
+        .use(Rest)
+        .use(Interactions)
+        .use(
+            swagger({
+                documentation: {
+                    info: {
+                        title: 'Most Cool Fumo Rest API On HTTP',
+                        license: Package.license,
+                        version: Package.version,
+                    },
+                },
+                path: '/docs',
+                exclude: ['/', '/interactions/'],
+            }),
+        )
+        .listen(port, () => Logger.assert('App is listening at ' + port))
+})()
 
 process.on('SIGINT', () => {
-    console.log('shutting down hehehehehe\n')
+    Logger.warn('Exiting process with SIGNIT signal')
     DataManager.instance.close()
     process.exit(0)
 })

@@ -1,5 +1,6 @@
 import { Routes } from 'discord-api-types/v10'
 import Commands from './commands'
+import { Logger } from '@/lib'
 
 const { DISCORD_CLIENT_ID, DISCORD_CLIENT_TOKEN, DISCORD_GUILD_ID } = process.env
 
@@ -16,4 +17,7 @@ fetch(apiUrl, {
     },
     body: JSON.stringify(Commands.map(({ execute, ...rest }) => rest)),
     method: 'PUT',
-}).then(async (res) => console.log(await res.json()))
+}).then(async (res) => {
+    Logger.assert('Commands were succesfully deployed to Discord API')
+    Logger.info(await res.json())
+})
