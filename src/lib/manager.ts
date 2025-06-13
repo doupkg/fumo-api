@@ -1,7 +1,8 @@
 import { type Collection, type Filter, type Condition, ObjectId } from 'mongodb'
+import { Logger } from './logger'
 import NodeCache from 'node-cache'
+import Characters from '@/data/characters.json'
 import DatabaseConnection from './database'
-import Characters from '../data/characters.json'
 import sift from 'sift'
 
 const filetypes = ['gif', 'png', 'jpg', 'webp']
@@ -9,7 +10,7 @@ const filetypes = ['gif', 'png', 'jpg', 'webp']
 export type InsertionData = {
     url: string
     title: string
-    filetype: 'gif' | 'png' | 'jpg' | 'webp'
+    filetype: string
     characters: string[]
 }
 
@@ -52,7 +53,7 @@ export class DataManager {
 
     async init(uri: string, db: string, collection: string): Promise<void> {
         if (this.db) {
-            console.log('Database already initialized')
+            Logger.warn('Database already initialized')
             return
         }
 
@@ -61,7 +62,7 @@ export class DataManager {
         this.cacheKeyPrefix = `${collection}:document:`
 
         const data = await this.getAll()
-        console.log(`Database initialized for collection ${collection} with ${data.length} documents`)
+        Logger.assert(`Database initialized for collection ${collection} with ${data.length} documents`)
     }
 
     async upload(data: InsertionData): Promise<Document> {
