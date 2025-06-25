@@ -115,9 +115,11 @@ function concatUint8Arrays(arr1: Uint8Array, arr2: Uint8Array): Uint8Array {
     return merged
 }
 
-export async function rawBodyMiddleware({ request, set }: { request: Request; set: any }) {
-    const rawBody = await request.text().catch(console.error)
-    set.rawBody = rawBody
+export async function rawBodyMiddleware({ request, store }: { request: Request; store: any }) {
+    if (!store.rawBody) {
+        const rawBody = await request.text().catch(console.error)
+        store.rawBody = rawBody
+    }
 }
 
 export async function discordInteractionsMiddleware({ request, set }: { request: Request; set: any }) {

@@ -17,7 +17,7 @@ const modalCollection = new Map<string, any>(Modals.map((modal) => [modal.name, 
 
 const Interactions = new Elysia({ prefix: '/interactions' })
 
-Interactions.post(
+Interactions.onRequest(rawBodyMiddleware).post(
     '/',
     async ({ body }) => {
         const interaction = body as APIInteraction
@@ -48,7 +48,7 @@ Interactions.post(
         }
     },
     {
-        beforeHandle: [rawBodyMiddleware, discordInteractionsMiddleware],
+        beforeHandle: discordInteractionsMiddleware,
     },
 )
 Logger.info('Interactions router loaded')
