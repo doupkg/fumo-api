@@ -1,4 +1,3 @@
-import { subtle } from 'node:crypto'
 import { status } from 'elysia'
 
 const discordHeaders = {
@@ -103,16 +102,25 @@ export async function discordInteractionsMiddleware({ request, store }: { reques
 
 async function verifyKey(rawBody: string, signature: string, timestamp: string, publicKey: string) {
     try {
-        // 1. Prepara los datos para verificación
+        console.log('Verifying key with:')
+        console.log('- rawBody length:', rawBody.length)
+        console.log('- signature:', signature)
+        console.log('- timestamp:', timestamp)
+        console.log('- publicKey length:', publicKey.length)
+
         const timestampData = new TextEncoder().encode(timestamp)
         const bodyData = new TextEncoder().encode(rawBody)
         const message = new Uint8Array([...timestampData, ...bodyData])
 
-        // 2. Importa la clave pública
-        const key = await subtle.importKey('raw', hexToUint8Array(publicKey), { name: 'ED25519' }, false, ['verify'])
+        console.log('- message length:', message.length)
 
-        // 3. Verifica la firma
-        return await subtle.verify('ED25519', key, hexToUint8Array(signature), message)
+        const key = await crypto.subtle.importKey('raw', hexToUint8Array(publicKey), { name: 'Ed25519' }, false, [
+            'verify',
+        ])
+
+        const result = await crypto.subtle.verify('Ed25519', key, hexToUint8Array(signature), message)
+        console.log('- verification result:', result)
+        return result
     } catch (error) {
         console.error('Verification error:', error)
         return false
@@ -121,5 +129,9 @@ async function verifyKey(rawBody: string, signature: string, timestamp: string, 
 
 // Helper para convertir hex a Uint8Array
 function hexToUint8Array(hex: string) {
-    return new Uint8Array(hex.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)))
+    const matches = hex.match(/.{1,2}/g)
+    if (!matches) {
+        throw new Error('Invalid hex string')
+    }
+    return new Uint8Array(matches.map((byte) => parseInt(byte, 16)))
 }
