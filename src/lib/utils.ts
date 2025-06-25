@@ -126,7 +126,7 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
             return status(401, { error: 'Missing required headers' })
         }
 
-        const rawBody = await new Response(request.body).text()
+        const rawBody = await Bun.readableStreamToText(request.body!)
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
