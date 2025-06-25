@@ -138,6 +138,7 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
         console.log('Valid signature')
         return
     } catch (ex) {
+        console.log(ex)
         status(500, 'Internal server error, oops')
     }
 }
