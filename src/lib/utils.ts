@@ -122,7 +122,7 @@ export async function rawBodyMiddleware({ request, store }: { request: Request; 
     }
 }
 
-export async function discordInteractionsMiddleware({ request, set }: { request: Request; set: any }) {
+export async function discordInteractionsMiddleware({ request, store }: { request: Request; store: any }) {
     try {
         const signature = request.headers.get(discordHeaders.signature)
         const timestamp = request.headers.get(discordHeaders.timestamp)
@@ -132,7 +132,7 @@ export async function discordInteractionsMiddleware({ request, set }: { request:
             return status(401, { error: 'Missing required headers' })
         }
 
-        const rawBody = set.rawBody
+        const rawBody = store.rawBody
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
