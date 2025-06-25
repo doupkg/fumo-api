@@ -149,6 +149,7 @@ async function verifyKey(
     timestamp: string,
     clientPublicKey: string | CryptoKey,
 ): Promise<boolean> {
+    console.dir({ rawBody, signature, timestamp, clientPublicKey }, { depth: null })
     try {
         const timestampData = valueToUint8Array(timestamp)
         const bodyData = valueToUint8Array(rawBody)
