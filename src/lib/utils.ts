@@ -115,30 +115,32 @@ function concatUint8Arrays(arr1: Uint8Array, arr2: Uint8Array): Uint8Array {
     return merged
 }
 
-export async function discordInteractionsMiddleware({ request }: { request: Request }) {
+export async function rawBodyMiddleware({ request, set }: { request: Request; set: any }) {
+    const rawBody = await request.text()
+    set.rawBody = rawBody
+}
+
+export async function discordInteractionsMiddleware({ request, set }: { request: Request; set: any }) {
     try {
         const signature = request.headers.get(discordHeaders.signature)
         const timestamp = request.headers.get(discordHeaders.timestamp)
 
-        console.dir(request, { depth: null })
         if (!signature || !timestamp) {
             console.log('Missing required headers')
             return status(401, { error: 'Missing required headers' })
         }
 
-        const rawBody = await Bun.readableStreamToText(request.body!)
+        const rawBody = set.rawBody
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
         if (!isValid) {
-            console.log('Invalid signature')
             return status(403, { error: 'Invalid request signature' })
         }
 
         console.log('Valid signature')
         return
     } catch (ex) {
-        console.log(ex)
         status(500, 'Internal server error, oops')
     }
 }

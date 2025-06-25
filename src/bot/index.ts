@@ -1,6 +1,6 @@
 import { APIInteraction, InteractionType, InteractionResponseType } from 'discord-api-types/v10'
 import { Elysia } from 'elysia'
-import { discordInteractionsMiddleware, Logger } from '@/lib'
+import { discordInteractionsMiddleware, Logger, rawBodyMiddleware } from '@/lib'
 import Commands from './commands'
 import Components from './components/'
 import Modals from './modals'
@@ -48,7 +48,7 @@ Interactions.post(
         }
     },
     {
-        beforeHandle: discordInteractionsMiddleware,
+        beforeHandle: [rawBodyMiddleware, discordInteractionsMiddleware],
     },
 )
 Logger.info('Interactions router loaded')
