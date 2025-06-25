@@ -122,6 +122,7 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
 
         console.dir(request, { depth: null })
         if (!signature || !timestamp) {
+            console.log('Missing required headers')
             return status(401, { error: 'Missing required headers' })
         }
 
@@ -130,10 +131,11 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
         if (!isValid) {
+            console.log('Invalid signature')
             return status(403, { error: 'Invalid request signature' })
         }
 
-        console.log('Valid signaturehehedahsd1{d21d')
+        console.log('Valid signature')
         return
     } catch (ex) {
         status(500, 'Internal server error, oops')
