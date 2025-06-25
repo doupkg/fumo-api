@@ -120,12 +120,12 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
         const signature = request.headers.get(discordHeaders.signature)
         const timestamp = request.headers.get(discordHeaders.timestamp)
 
+        console.dir(request, { depth: null })
         if (!signature || !timestamp) {
             return status(401, { error: 'Missing required headers' })
         }
 
         const rawBody = await request.text()
-        console.dir(request, { depth: null })
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
