@@ -85,24 +85,26 @@ export async function discordInteractionsMiddleware({ request, store }: { reques
 
         const rawBody = store.rawBody
 
-        console.log('=== TESTING BOTH VERIFICATION METHODS ===')
+        console.log('=== VERIFICATION ATTEMPT ===')
+        console.log('Headers received:', { signature: signature.substring(0, 16) + '...', timestamp })
+        console.log('Body length:', rawBody.length)
 
-        const isValid1 = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
-        const isValid2 = await verifyKeyAlternative(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
+        const isValid = await verifyKeyRobust(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
-        console.log('Method 1 result:', isValid1)
-        console.log('Method 2 result:', isValid2)
-
-        if (!isValid1 && !isValid2) {
-            console.log('Both verification methods failed')
+        if (!isValid) {
+            console.log('❌ Verification failed')
+            console.log('Please check:')
+            console.log('1. DISCORD_PUBLIC_KEY environment variable is correct')
+            console.log('2. The public key matches your Discord application')
+            console.log('3. The endpoint URL is correct in Discord Developer Portal')
             return status(403, { error: 'Invalid request signature' })
         }
 
-        console.log('Valid signature')
+        console.log('✅ Verification successful')
         return
     } catch (ex) {
-        console.log(ex)
-        status(500, 'Internal server error, oops')
+        console.error('Middleware error:', ex)
+        return status(500, 'Internal server error')
     }
 }
 
@@ -171,6 +173,65 @@ async function verifyKeyAlternative(rawBody: string, signature: string, timestam
         return isValid
     } catch (error) {
         console.error('Alternative verification error:', error)
+        return false
+    }
+}
+
+// Función más robusta para verificación
+async function verifyKeyRobust(rawBody: string, signature: string, timestamp: string, publicKey: string) {
+    try {
+        console.log('=== ROBUST VERIFICATION ===')
+
+        // Verificar que la clave pública sea válida
+        if (!/^[0-9a-f]{64}$/i.test(publicKey)) {
+            console.error('Invalid public key format')
+            return false
+        }
+
+        // Verificar que la firma sea válida
+        if (!/^[0-9a-f]{128}$/i.test(signature)) {
+            console.error('Invalid signature format')
+            return false
+        }
+
+        // Verificar que el timestamp sea válido
+        if (!/^\d+$/.test(timestamp)) {
+            console.error('Invalid timestamp format')
+            return false
+        }
+
+        console.log('- All input formats are valid')
+
+        // Convertir hex a bytes de forma más segura
+        const publicKeyBytes = new Uint8Array(publicKey.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)))
+        const signatureBytes = new Uint8Array(signature.match(/.{1,2}/g)!.map((byte) => parseInt(byte, 16)))
+
+        // Crear el mensaje exactamente como lo especifica Discord
+        const timestampBytes = new TextEncoder().encode(timestamp)
+        const bodyBytes = new TextEncoder().encode(rawBody)
+
+        // Concatenar timestamp + body
+        const message = new Uint8Array(timestampBytes.length + bodyBytes.length)
+        message.set(timestampBytes, 0)
+        message.set(bodyBytes, timestampBytes.length)
+
+        console.log('- Message created successfully')
+        console.log('- Timestamp bytes:', timestampBytes.length)
+        console.log('- Body bytes:', bodyBytes.length)
+        console.log('- Total message bytes:', message.length)
+
+        // Importar la clave pública
+        const key = await crypto.subtle.importKey('raw', publicKeyBytes, { name: 'Ed25519' }, false, ['verify'])
+
+        console.log('- Public key imported successfully')
+
+        // Verificar la firma
+        const isValid = await crypto.subtle.verify({ name: 'Ed25519' }, key, signatureBytes, message)
+
+        console.log('- Verification completed:', isValid)
+        return isValid
+    } catch (error) {
+        console.error('Robust verification error:', error)
         return false
     }
 }
