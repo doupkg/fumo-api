@@ -116,9 +116,14 @@ function concatUint8Arrays(arr1: Uint8Array, arr2: Uint8Array): Uint8Array {
 }
 
 export async function rawBodyMiddleware({ request, store }: { request: Request; store: any }) {
-    if (!store.rawBody) {
-        const rawBody = await request.text().catch(console.error)
-        store.rawBody = rawBody
+    console.log('Raw body middleware')
+    try {
+        if (!store.rawBody) {
+            const rawBody = await request.text().catch(console.error)
+            store.rawBody = rawBody
+        }
+    } catch (ex) {
+        console.log(ex)
     }
 }
 
