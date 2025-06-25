@@ -159,7 +159,7 @@ async function verifyKey(
     timestamp: string,
     clientPublicKey: string | CryptoKey,
 ): Promise<boolean> {
-    console.dir
+    console.log(rawBody)
     try {
         const timestampData = valueToUint8Array(timestamp)
         const bodyData = valueToUint8Array(rawBody)
@@ -187,6 +187,7 @@ async function verifyKey(
         )
         return isValid
     } catch (ex) {
+        console.log(ex)
         return false
     }
 }
