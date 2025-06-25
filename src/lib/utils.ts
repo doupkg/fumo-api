@@ -85,10 +85,16 @@ export async function discordInteractionsMiddleware({ request, store }: { reques
 
         const rawBody = store.rawBody
 
-        const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
+        console.log('=== TESTING BOTH VERIFICATION METHODS ===')
 
-        if (!isValid) {
-            console.log('Invalid signature')
+        const isValid1 = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
+        const isValid2 = await verifyKeyAlternative(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
+
+        console.log('Method 1 result:', isValid1)
+        console.log('Method 2 result:', isValid2)
+
+        if (!isValid1 && !isValid2) {
+            console.log('Both verification methods failed')
             return status(403, { error: 'Invalid request signature' })
         }
 
@@ -104,15 +110,19 @@ async function verifyKey(rawBody: string, signature: string, timestamp: string, 
     try {
         console.log('Verifying key with:')
         console.log('- rawBody length:', rawBody.length)
+        console.log('- rawBody content:', rawBody.substring(0, 200) + '...') // Solo los primeros 200 chars
         console.log('- signature:', signature)
         console.log('- timestamp:', timestamp)
         console.log('- publicKey length:', publicKey.length)
+        console.log('- publicKey:', publicKey)
 
         const timestampData = new TextEncoder().encode(timestamp)
         const bodyData = new TextEncoder().encode(rawBody)
         const message = new Uint8Array([...timestampData, ...bodyData])
 
         console.log('- message length:', message.length)
+        console.log('- timestampData length:', timestampData.length)
+        console.log('- bodyData length:', bodyData.length)
 
         const key = await crypto.subtle.importKey('raw', hexToUint8Array(publicKey), { name: 'Ed25519' }, false, [
             'verify',
@@ -127,11 +137,40 @@ async function verifyKey(rawBody: string, signature: string, timestamp: string, 
     }
 }
 
-// Helper para convertir hex a Uint8Array
 function hexToUint8Array(hex: string) {
     const matches = hex.match(/.{1,2}/g)
     if (!matches) {
         throw new Error('Invalid hex string')
     }
     return new Uint8Array(matches.map((byte) => parseInt(byte, 16)))
+}
+
+async function verifyKeyAlternative(rawBody: string, signature: string, timestamp: string, publicKey: string) {
+    try {
+        console.log('=== ALTERNATIVE VERIFICATION ===')
+
+        const publicKeyBytes = hexToUint8Array(publicKey)
+        console.log('- publicKeyBytes length:', publicKeyBytes.length)
+
+        const signatureBytes = hexToUint8Array(signature)
+        console.log('- signatureBytes length:', signatureBytes.length)
+
+        const timestampBytes = new TextEncoder().encode(timestamp)
+        const bodyBytes = new TextEncoder().encode(rawBody)
+        const message = new Uint8Array(timestampBytes.length + bodyBytes.length)
+        message.set(timestampBytes, 0)
+        message.set(bodyBytes, timestampBytes.length)
+
+        console.log('- message length:', message.length)
+
+        const key = await crypto.subtle.importKey('raw', publicKeyBytes, { name: 'Ed25519' }, false, ['verify'])
+
+        const isValid = await crypto.subtle.verify({ name: 'Ed25519' }, key, signatureBytes, message)
+
+        console.log('- alternative verification result:', isValid)
+        return isValid
+    } catch (error) {
+        console.error('Alternative verification error:', error)
+        return false
+    }
 }
