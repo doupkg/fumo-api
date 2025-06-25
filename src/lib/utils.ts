@@ -116,7 +116,7 @@ function concatUint8Arrays(arr1: Uint8Array, arr2: Uint8Array): Uint8Array {
 }
 
 export async function rawBodyMiddleware({ request, set }: { request: Request; set: any }) {
-    const rawBody = await request.text()
+    const rawBody = await request.text().catch(console.error)
     set.rawBody = rawBody
 }
 
