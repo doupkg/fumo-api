@@ -126,7 +126,7 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
             return status(401, { error: 'Missing required headers' })
         }
 
-        const rawBody = await request.clone().text()
+        const rawBody = await new Response(request.body).text()
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
@@ -149,7 +149,7 @@ async function verifyKey(
     timestamp: string,
     clientPublicKey: string | CryptoKey,
 ): Promise<boolean> {
-    console.dir({ rawBody, signature, timestamp, clientPublicKey }, { depth: null })
+    console.dir
     try {
         const timestampData = valueToUint8Array(timestamp)
         const bodyData = valueToUint8Array(rawBody)
