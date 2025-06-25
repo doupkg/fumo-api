@@ -125,6 +125,7 @@ export async function discordInteractionsMiddleware({ request }: { request: Requ
         }
 
         const rawBody = await request.text()
+        console.dir(request, { depth: null })
 
         const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
 
