@@ -1,6 +1,6 @@
 import { APIInteraction, InteractionType, InteractionResponseType } from 'discord-api-types/v10'
 import { Elysia } from 'elysia'
-import { Logger } from '@/lib'
+import { discordInteractionsMiddleware, Logger } from '@/lib'
 import Commands from './commands'
 import Components from './components/'
 import Modals from './modals'
@@ -17,34 +17,40 @@ const modalCollection = new Map<string, any>(Modals.map((modal) => [modal.name, 
 
 const Interactions = new Elysia({ prefix: '/interactions' })
 
-Interactions.post('/', async ({ body }) => {
-    const interaction = body as APIInteraction
+Interactions.post(
+    '/',
+    async ({ body }) => {
+        const interaction = body as APIInteraction
 
-    switch (interaction.type) {
-        case InteractionType.Ping:
-            Logger.info('Ping received')
-            return { type: InteractionResponseType.Pong }
+        switch (interaction.type) {
+            case InteractionType.Ping:
+                Logger.info('Ping received')
+                return { type: InteractionResponseType.Pong }
 
-        case InteractionType.ApplicationCommand:
-            const command = commandCollection.get(interaction.data.name)
-            const cmd_data = await command?.execute(interaction)
-            Logger.info(cmd_data)
+            case InteractionType.ApplicationCommand:
+                const command = commandCollection.get(interaction.data.name)
+                const cmd_data = await command?.execute(interaction)
+                Logger.info(cmd_data)
 
-            return cmd_data
+                return cmd_data
 
-        case InteractionType.MessageComponent:
-            const component = componentCollection.get(interaction.data.custom_id.split(':')[0])
-            const component_data = await component?.execute(interaction)
+            case InteractionType.MessageComponent:
+                const component = componentCollection.get(interaction.data.custom_id.split(':')[0])
+                const component_data = await component?.execute(interaction)
 
-            return component_data
+                return component_data
 
-        case InteractionType.ModalSubmit:
-            const modal = modalCollection.get(interaction.data.custom_id)
-            const modal_data = await modal?.execute(interaction)
+            case InteractionType.ModalSubmit:
+                const modal = modalCollection.get(interaction.data.custom_id)
+                const modal_data = await modal?.execute(interaction)
 
-            return modal_data
-    }
-})
+                return modal_data
+        }
+    },
+    {
+        beforeHandle: discordInteractionsMiddleware,
+    },
+)
 Logger.info('Interactions router loaded')
 
 export default Interactions

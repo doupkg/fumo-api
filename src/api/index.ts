@@ -10,7 +10,7 @@ const Rest = new Elysia()
     .get('/', `codeberg is ahh, last deploy: ${unixtime.toUTCString()}`)
     .get(
         '/fumos',
-        async ({ query }) => {
+        async ({ query, set }) => {
             const final_query = validateQuery(query)
 
             let documents: Document[]

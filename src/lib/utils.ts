@@ -1,3 +1,11 @@
+import { APIInteraction } from 'discord-api-types/v10'
+import { status } from 'elysia'
+
+const discordHeaders = {
+    signature: 'X-Signature-Ed25519',
+    timestamp: 'X-Signature-Timestamp',
+}
+
 export function encodeBuffer(prefix: string, object: Record<any, unknown>) {
     const stringBuffer = Buffer.from(JSON.stringify(object)).toString('base64')
 
@@ -107,7 +115,30 @@ function concatUint8Arrays(arr1: Uint8Array, arr2: Uint8Array): Uint8Array {
     return merged
 }
 
-export async function verifyKey(
+export async function discordInteractionsMiddleware({ request }: { request: Request }) {
+    try {
+        const signature = request.headers.get(discordHeaders.signature)
+        const timestamp = request.headers.get(discordHeaders.timestamp)
+
+        if (!signature || !timestamp) {
+            return status(401, { error: 'Missing required headers' })
+        }
+
+        const rawBody = await request.text()
+
+        const isValid = await verifyKey(rawBody, signature, timestamp, process.env.DISCORD_PUBLIC_KEY!)
+
+        if (!isValid) {
+            return status(403, { error: 'Invalid request signature' })
+        }
+
+        console.log('Valid signaturehehedahsd1{d21d')
+    } catch (ex) {
+        status(500, 'Internal server error, oops')
+    }
+}
+
+async function verifyKey(
     rawBody: Uint8Array | ArrayBuffer | Buffer | string,
     signature: string,
     timestamp: string,
